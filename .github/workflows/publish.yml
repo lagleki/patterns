@@ -20,7 +20,7 @@ env:
   # TODO: Update the language picker in index.hbs to link new languages.
   # TODO: As long as https://github.com/google/mdbook-i18n-helpers/issues/12 is not implemented, yet.
   # TODO: Activate when first translation is available
-  # These are the languages in addition to 'en', which is the main language
+  # These are the languages in addition to 'ru', which is the main language
   # LANGUAGES: xx
 
 jobs:
@@ -39,7 +39,7 @@ jobs:
       - name: Install mdbook
         uses: ./.github/workflows/install-mdbook
 
-      - name: Build course in English
+      - name: Build course in Russian
         run: mdbook build -d book
 
       # TODO: Activate when first translation is available

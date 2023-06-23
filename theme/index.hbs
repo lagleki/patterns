@@ -144,7 +144,7 @@
                         </button>
                         <ul id="language-list" class="theme-popup" aria-label="Languages" role="menu">
                           <li role="none"><button role="menuitem" class="theme">
-                              <a id="en">English</a>
+                              <a id="ru">Русский</a>
                           </button></li>
                           {{!-- <li role="none"><button role="menuitem" class="theme">
                               <a id="pt-BR">Brazilian Portuguese</a>
@@ -165,7 +165,7 @@
 
                           // The path to the root, taking the current
                           // language into account.
-                          {{#if (eq language "en")}}
+                          {{#if (eq language "ru")}}
                           let full_path_to_root = "{{ path_to_root }}";
                           {{else}}
                           let full_path_to_root = "{{ path_to_root }}../";
@@ -174,7 +174,7 @@
                           // access to the path to the Markdown file).
                           let path = "{{ path }}".replace(/\.md$/, ".html");
                           for (let lang of langList.querySelectorAll("a")) {
-                              if (lang.id == "en") {
+                              if (lang.id == "ru") {
                                   lang.href = `${full_path_to_root}${path}`;
                               } else {
                                   lang.href = `${full_path_to_root}${lang.id}/${path}`;
@@ -193,7 +193,7 @@
                         </a>
                         {{/if}}
                         {{#if git_repository_edit_url}}
-                        {{#if (eq language "en")}}
+                        {{#if (eq language "ru")}}
                         <a href="{{git_repository_edit_url}}" title="Suggest an edit" aria-label="Suggest an edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>

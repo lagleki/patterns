@@ -1,8 +1,8 @@
 [book]
-title = "Rust Design Patterns"
+title = "Паттерны проектирования в Rust"
 authors = ["the rust-unofficial authors"]
-description = "A catalogue of Rust design patterns, anti-patterns and idioms"
-language = "en"
+description = "Каталог паттернов проектирования, анти-паттернов и идиом в языке Rust"
+language = "ru"
 multilingual = false
 src = "src"
 
@@ -20,9 +20,9 @@ edition = "2018"
 curly-quotes = true
 default-theme = "rust"
 site-url = "/patterns/"
-git-repository-url = "https://github.com/rust-unofficial/patterns"
+git-repository-url = "https://github.com/lagleki/patterns"
 git-repository-icon = "fa-github"
-edit-url-template = "https://github.com/rust-unofficial/patterns/edit/main/{path}"
+edit-url-template = "https://github.com/lagleki/patterns/edit/Russian/{path}"
 additional-css = ["./language-picker.css"]
 
 [output.html.fold]

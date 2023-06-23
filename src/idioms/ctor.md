@@ -99,7 +99,7 @@ impl Second {
 - [Идиома по умолчанию](default.md) для более подробного описания
   трейта `Default`.
 
-- [Шаблон строителя](../patterns/creational/builder.md) для создания
+- [Паттерн строителя](../patterns/creational/builder.md) для создания
   объектов, где есть несколько конфигураций.
 
 - [API Guidelines/C-COMMON-TRAITS][API Guidelines/C-COMMON-TRAITS] для

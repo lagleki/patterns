@@ -22,7 +22,7 @@
   - [Временная изменяемость](./idioms/temporary-mutability.md)
   - [Возврат потребляемого аргумента при ошибке](./idioms/return-consumed-arg-on-error.md)
 
-- [Шаблоны проектирования](./patterns/index.md)
+- [Паттерны проектирования](./patterns/index.md)
   - [Поведенческие](./patterns/behavioural/intro.md)
     - [Команда](./patterns/behavioural/command.md)
     - [Интерпретатор](./patterns/behavioural/interpreter.md)
@@ -41,7 +41,7 @@
     - [API на основе объектов](./patterns/ffi/export.md)
     - [Консолидация типов в обертки](./patterns/ffi/wrappers.md)
 
-- [Анти-шаблоны](./anti_patterns/index.md)
+- [Анти-паттерны](./anti_patterns/index.md)
   - [Клонирование для удовлетворения borrow checker](./anti_patterns/borrow_clone.md)
   - [`#[deny(warnings)]`](./anti_patterns/deny-warnings.md)
   - [Полиморфизм Deref](./anti_patterns/deref.md)

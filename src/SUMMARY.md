@@ -15,7 +15,7 @@
     - [Идиоматические ошибки](./idioms/ffi/errors.md)
     - [Принятие строк](./idioms/ffi/accepting-strings.md)
     - [Передача строк](./idioms/ffi/passing-strings.md)
-  - [Итерация по опции](./idioms/option-iter.md)
+  - [Итерация по `Option`](./idioms/option-iter.md)
   - [Передача переменных в замыкание](./idioms/pass-var-to-closure.md)
   - [Приватность для расширяемости](./idioms/priv-extend.md)
   - [Простая инициализация документации](./idioms/rustdoc-init.md)

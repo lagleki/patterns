@@ -1,23 +1,14 @@
-# The `Default` Trait
+# Трейт `Default`
 
-## Description
+## Описание
 
-Many types in Rust have a [constructor]. However, this is _specific_ to the
-type; Rust cannot abstract over "everything that has a `new()` method". To
-allow this, the [`Default`] trait was conceived, which can be used with
-containers and other generic types (e.g. see [`Option::unwrap_or_default()`]).
-Notably, some containers already implement it where applicable.
+Многие типы в Rust имеют [конструктор]. Однако это _специфично_ для типа; Rust не может абстрагироваться от "всего, что имеет метод `new()`". Для этого был создан трейт [`Default`], который может использоваться с контейнерами и другими обобщенными типами (например, см. [`Option::unwrap_or_default()`]). Следует отметить, что некоторые контейнеры уже реализуют его там, где это применимо.
 
-Not only do one-element containers like `Cow`, `Box` or `Arc` implement
-`Default` for contained `Default` types, one can automatically
-`#[derive(Default)]` for structs whose fields all implement it, so the more
-types implement `Default`, the more useful it becomes.
+Не только одноэлементные контейнеры, такие как `Cow`, `Box` или `Arc`, реализуют `Default` для содержащихся типов `Default`, но также можно автоматически `#[derive(Default)]` для структур, поля которых все реализуют его, так что чем больше типов реализуют `Default`, тем более полезным он становится.
 
-On the other hand, constructors can take multiple arguments, while the
-`default()` method does not. There can even be multiple constructors with
-different names, but there can only be one `Default` implementation per type.
+С другой стороны, конструкторы могут принимать несколько аргументов, в то время как метод `default()` - нет. Даже может быть несколько конструкторов с разными именами, но может быть только одна реализация `Default` на тип.
 
-## Example
+## Пример
 
 ```rust
 use std::{path::PathBuf, time::Duration};
@@ -55,15 +46,14 @@ fn main() {
 }
 ```
 
-## See also
+## Смотрите также
 
-- The [constructor] idiom is another way to generate instances that may or may
-  not be "default"
-- The [`Default`] documentation (scroll down for the list of implementors)
+- Идиома [конструктора] - это еще один способ создания экземпляров, которые могут быть "по умолчанию" или нет.
+- Документация по [`Default`] (прокрутите вниз для списка реализаций)
 - [`Option::unwrap_or_default()`]
 - [`derive(new)`]
 
-[constructor]: ctor.md
+[конструктор]: ctor.md
 [`Default`]: https://doc.rust-lang.org/stable/std/default/trait.Default.html
 [`Option::unwrap_or_default()`]: https://doc.rust-lang.org/stable/std/option/enum.Option.html#method.unwrap_or_default
 [`derive(new)`]: https://crates.io/crates/derive-new/

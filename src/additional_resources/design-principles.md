@@ -1,95 +1,94 @@
-# Design principles
+# Принципы проектирования
 
-## A brief overview over common design principles
+## Краткий обзор общих принципов проектирования
 
 ---
 
 ## [SOLID](https://en.wikipedia.org/wiki/SOLID)
 
-- [Single Responsibility Principle (SRP)](https://en.wikipedia.org/wiki/Single-responsibility_principle):
-  A class should only have a single responsibility, that is, only changes to
-  one part of the software's specification should be able to affect the
-  specification of the class.
-- [Open/Closed Principle (OCP)](https://en.wikipedia.org/wiki/Open%E2%80%93closed_principle):
-  "Software entities ... should be open for extension, but closed for
-  modification."
-- [Liskov Substitution Principle (LSP)](https://en.wikipedia.org/wiki/Liskov_substitution_principle):
-  "Objects in a program should be replaceable with instances of their subtypes
-  without altering the correctness of that program."
-- [Interface Segregation Principle (ISP)](https://en.wikipedia.org/wiki/Interface_segregation_principle):
-  "Many client-specific interfaces are better than one general-purpose
-  interface."
-- [Dependency Inversion Principle (DIP)](https://en.wikipedia.org/wiki/Dependency_inversion_principle):
-  One should "depend upon abstractions, [not] concretions."
+- [Принцип единственной ответственности (SRP)](https://en.wikipedia.org/wiki/Single-responsibility_principle):
+  Класс должен иметь только одну ответственность, то есть изменения только в
+  одной части спецификации программного обеспечения должны влиять на
+  спецификацию класса.
+- [Принцип открытости/закрытости (OCP)](https://en.wikipedia.org/wiki/Open%E2%80%93closed_principle):
+  "Сущности программного обеспечения ... должны быть открыты для расширения, но закрыты для
+  изменения."
+- [Принцип подстановки Барбары Лисков (LSP)](https://en.wikipedia.org/wiki/Liskov_substitution_principle):
+  "Объекты в программе должны быть заменяемыми экземплярами своих подтипов
+  без изменения правильности этой программы."
+- [Принцип разделения интерфейса (ISP)](https://en.wikipedia.org/wiki/Interface_segregation_principle):
+  "Многие интерфейсы, специфичные для клиента, лучше, чем один универсальный
+  интерфейс."
+- [Принцип инверсии зависимостей (DIP)](https://en.wikipedia.org/wiki/Dependency_inversion_principle):
+  Следует "зависеть от абстракций, а не от конкретики".
 
 ## [DRY (Don’t Repeat Yourself)](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself)
 
-"Every piece of knowledge must have a single, unambiguous, authoritative
-representation within a system"
+"Каждый кусок знаний должен иметь единственное, однозначное, авторитетное
+представление в системе"
 
-## [KISS principle](https://en.wikipedia.org/wiki/KISS_principle)
+## [Принцип KISS](https://en.wikipedia.org/wiki/KISS_principle)
 
-most systems work best if they are kept simple rather than made complicated;
-therefore, simplicity should be a key goal in design, and unnecessary
-complexity should be avoided
+большинство систем работают лучше, если они просты, а не сложны;
+поэтому простота должна быть ключевой целью в проектировании, а ненужная
+сложность должна быть избегнута
 
-## [Law of Demeter (LoD)](https://en.wikipedia.org/wiki/Law_of_Demeter)
+## [Закон Деметры (LoD)](https://en.wikipedia.org/wiki/Law_of_Demeter)
 
-a given object should assume as little as possible about the structure or
-properties of anything else (including its subcomponents), in accordance with
-the principle of "information hiding"
+данный объект должен предполагать как можно меньше о структуре или
+свойствах чего-либо еще (включая его подкомпоненты), в соответствии с
+принципом "скрытия информации"
 
-## [Design by contract (DbC)](https://en.wikipedia.org/wiki/Design_by_contract)
+## [Проектирование по контракту (DbC)](https://en.wikipedia.org/wiki/Design_by_contract)
 
-software designers should define formal, precise and verifiable interface
-specifications for software components, which extend the ordinary definition of
-abstract data types with preconditions, postconditions and invariants
+проектировщики программного обеспечения должны определять формальные, точные и проверяемые интерфейсные
+спецификации для компонентов программного обеспечения, которые расширяют обычное определение
+абстрактных типов данных с предусловиями, постусловиями и инвариантами
 
-## [Encapsulation](https://en.wikipedia.org/wiki/Encapsulation_(computer_programming))
+## [Инкапсуляция](https://en.wikipedia.org/wiki/Encapsulation_(computer_programming))
 
-bundling of data with the methods that operate on that data, or the restricting
-of direct access to some of an object's components. Encapsulation is used to
-hide the values or state of a structured data object inside a class, preventing
-unauthorized parties' direct access to them.
+упаковка данных с методами, которые работают с этими данными, или ограничение
+прямого доступа к некоторым компонентам объекта. Инкапсуляция используется для
+скрытия значений или состояния структурированного объекта данных внутри класса, предотвращая
+прямой доступ неавторизованных сторон к ним.
 
-## [Command-Query-Separation(CQS)](https://en.wikipedia.org/wiki/Command%E2%80%93query_separation)
+## [Разделение команд и запросов (CQS)](https://en.wikipedia.org/wiki/Command%E2%80%93query_separation)
 
-“Functions should not produce abstract side effects...only commands
-(procedures) will be permitted to produce side effects.” - Bertrand Meyer:
+"Функции не должны производить абстрактные побочные эффекты... только команды
+(процедуры) будут разрешены для производства побочных эффектов." - Бертран Мейер:
 Object-Oriented Software Construction
 
-## [Principle of least astonishment (POLA)](https://en.wikipedia.org/wiki/Principle_of_least_astonishment)
+## [Принцип наименьшего удивления (POLA)](https://en.wikipedia.org/wiki/Principle_of_least_astonishment)
 
-a component of a system should behave in a way that most users will expect it
-to behave. The behavior should not astonish or surprise users
+компонент системы должен вести себя так, как большинство пользователей ожидают,
+чтобы он вел себя. Поведение не должно удивлять или удивлять пользователей
 
-## Linguistic-Modular-Units
+## Лингвистические модульные единицы
 
-“Modules must correspond to syntactic units in the language used.” - Bertrand
+"Модули должны соответствовать синтаксическим единицам в используемом языке." - Бертран
 Meyer: Object-Oriented Software Construction
 
-## Self-Documentation
+## Самодокументирование
 
-“The designer of a module should strive to make all information about the
-module part of the module itself.” - Bertrand Meyer: Object-Oriented Software
+"Проектировщик модуля должен стремиться сделать всю информацию о
+модуле частью самого модуля." - Бертран Мейер: Object-Oriented Software
 Construction
 
-## Uniform-Access
+## Единый доступ
 
-“All services offered by a module should be available through a uniform
-notation, which does not betray whether they are implemented through storage or
-through computation.” - Bertrand Meyer: Object-Oriented Software Construction
+"Все услуги, предлагаемые модулем, должны быть доступны через единообразную
+нотацию, которая не выдаст, реализованы ли они через хранение или
+вычисление." - Бертран Мейер: Object-Oriented Software Construction
 
-## Single-Choice
+## Единственный выбор
 
-“Whenever a software system must support a set of alternatives, one and only
-one module in the system should know their exhaustive list.” - Bertrand Meyer:
+"Когда программная система должна поддерживать набор альтернатив, один и только
+один модуль в системе должен знать их исчерпывающий список." - Бертран Мейер:
 Object-Oriented Software Construction
 
-## Persistence-Closure
+## Замыкание сохранения
 
-“Whenever a storage mechanism stores an object, it must store with it the
-dependents of that object. Whenever a retrieval mechanism retrieves a
-previously stored object, it must also retrieve any dependent of that object
-that has not yet been retrieved.” - Bertrand Meyer: Object-Oriented Software
+"Когда механизм хранения хранит объект, он должен хранить с ним
+зависимые объекты. Когда механизм извлечения извлекает ранее сохраненный объект, он также должен извлекать любой зависимый объект этого объекта,
+который еще не был извлечен." - Бертран Мейер: Object-Oriented Software
 Construction

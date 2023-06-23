@@ -1,12 +1,12 @@
-# Finalisation in destructors
+# Завершение в деструкторах
 
-## Description
+## Описание
 
-Rust does not provide the equivalent to `finally` blocks - code that will be
-executed no matter how a function is exited. Instead, an object's destructor can
-be used to run code that must be run before exit.
+Rust не предоставляет эквивалент блоков `finally` - кода, который будет выполнен
+независимо от того, как функция завершается. Вместо этого деструктор объекта может
+быть использован для выполнения кода, который должен быть выполнен перед выходом.
 
-## Example
+## Пример
 
 ```rust,ignore
 fn bar() -> Result<(), ()> {
@@ -29,62 +29,57 @@ fn bar() -> Result<(), ()> {
 }
 ```
 
-## Motivation
+## Мотивация
 
-If a function has multiple return points, then executing code on exit becomes
-difficult and repetitive (and thus bug-prone). This is especially the case where
-return is implicit due to a macro. A common case is the `?` operator which
-returns if the result is an `Err`, but continues if it is `Ok`. `?` is used as
-an exception handling mechanism, but unlike Java (which has `finally`), there is
-no way to schedule code to run in both the normal and exceptional cases.
-Panicking will also exit a function early.
+Если функция имеет несколько точек возврата, то выполнение кода при выходе становится
+сложным и повторяющимся (и, следовательно, склонным к ошибкам). Это особенно верно в случае,
+когда возврат является неявным из-за макроса. Обычный случай - оператор `?`, который
+возвращает, если результат является `Err`, но продолжает, если это `Ok`. `?` используется как
+механизм обработки исключений, но в отличие от Java (которая имеет `finally`), нет
+способа запланировать выполнение кода в обычных и исключительных случаях.
+Паника также приведет к преждевременному выходу из функции.
 
-## Advantages
+## Преимущества
 
-Code in destructors will (nearly) always be run - copes with panics, early
-returns, etc.
+Код в деструкторах будет (почти) всегда выполняться - справляется с паниками, ранними
+выходами и т.д.
 
-## Disadvantages
+## Недостатки
 
-It is not guaranteed that destructors will run. For example, if there is an
-infinite loop in a function or if running a function crashes before exit.
-Destructors are also not run in the case of a panic in an already panicking
-thread. Therefore, destructors cannot be relied on as finalizers where it is
-absolutely essential that finalisation happens.
+Не гарантируется, что деструкторы будут запущены. Например, если в функции есть бесконечный цикл
+или если выполнение функции завершается аварийно до выхода. Деструкторы также не запускаются в случае
+паники в уже паникующем потоке. Поэтому на деструкторы нельзя полагаться как на завершающие, где это
+абсолютно необходимо.
 
-This pattern introduces some hard to notice, implicit code. Reading a function
-gives no clear indication of destructors to be run on exit. This can make
-debugging tricky.
+Этот шаблон вводит некоторый неявный код, который трудно заметить. Чтение функции
+не дает ясного указания на деструкторы, которые будут запущены при выходе. Это может сделать
+отладку сложной.
 
-Requiring an object and `Drop` impl just for finalisation is heavy on boilerplate.
+Требование объекта и реализации `Drop` только для завершения является тяжеловесным.
 
-## Discussion
+## Обсуждение
 
-There is some subtlety about how exactly to store the object used as a
-finalizer. It must be kept alive until the end of the function and must then be
-destroyed. The object must always be a value or uniquely owned pointer (e.g.,
-`Box<Foo>`). If a shared pointer (such as `Rc`) is used, then the finalizer can
-be kept alive beyond the lifetime of the function. For similar reasons, the
-finalizer should not be moved or returned.
+Существует некоторая тонкость в том, как именно хранить объект, используемый в качестве
+завершающего. Он должен быть сохранен до конца функции и затем уничтожен. Объект всегда должен быть
+значением или уникальным владеющим указателем (например, `Box<Foo>`). Если используется общий указатель
+(например, `Rc`), то завершающий объект может быть сохранен за пределами времени жизни функции. По
+аналогичным причинам завершающий объект не должен быть перемещен или возвращен.
 
-The finalizer must be assigned into a variable, otherwise it will be destroyed
-immediately, rather than when it goes out of scope. The variable name must start
-with `_` if the variable is only used as a finalizer, otherwise the compiler
-will warn that the finalizer is never used. However, do not call the variable
-`_` with no suffix - in that case it will be destroyed immediately.
+Завершающий объект должен быть присвоен переменной, иначе он будет уничтожен немедленно, а не при выходе
+из области видимости. Имя переменной должно начинаться с `_`, если переменная используется только в качестве
+завершающего объекта, в противном случае компилятор будет предупреждать, что завершающий объект не используется.
+Однако не называйте переменную `_` без суффикса - в этом случае она будет уничтожена немедленно.
 
-In Rust, destructors are run when an object goes out of scope. This happens
-whether we reach the end of block, there is an early return, or the program
-panics. When panicking, Rust unwinds the stack running destructors for each
-object in each stack frame. So, destructors get called even if the panic happens
-in a function being called.
+В Rust деструкторы запускаются, когда объект выходит из области видимости. Это происходит, независимо от того,
+достигаем ли мы конца блока, есть ли ранний возврат или программа паникует. При панике Rust разворачивает стек,
+запуская деструкторы для каждого объекта в каждом кадре стека. Таким образом, деструкторы вызываются даже если
+паника происходит в вызываемой функции.
 
-If a destructor panics while unwinding, there is no good action to take, so Rust
-aborts the thread immediately, without running further destructors. This means
-that destructors are not absolutely guaranteed to run. It also means that you
-must take extra care in your destructors not to panic, since it could leave
-resources in an unexpected state.
+Если деструктор паникует во время разворачивания, нет хорошего действия, которое можно предпринять, поэтому Rust
+немедленно прерывает поток, не запуская дополнительные деструкторы. Это означает, что деструкторы не абсолютно
+гарантированы для запуска. Это также означает, что вы должны быть особенно осторожны в своих деструкторах, чтобы
+не вызвать панику, поскольку это может оставить ресурсы в неожиданном состоянии.
 
-## See also
+## Смотрите также
 
 [RAII guards](../patterns/behavioural/RAII.md).

@@ -1,17 +1,14 @@
-# Easy doc initialization
+# Легкая инициализация документации
 
-## Description
+## Описание
 
-If a struct takes significant effort to initialize when writing docs, it can be
-quicker to wrap your example with a helper function which takes the struct as an
-argument.
+Если для написания документации требуется значительное усилие для инициализации структуры, то может быть быстрее обернуть ваш пример в функцию-помощник, которая принимает структуру в качестве аргумента.
 
-## Motivation
+## Мотивация
 
-Sometimes there is a struct with multiple or complicated parameters and several
-methods. Each of these methods should have examples.
+Иногда есть структура с несколькими или сложными параметрами и несколькими методами. Каждый из этих методов должен иметь примеры.
 
-For example:
+Например:
 
 ````rust,ignore
 struct Connection {
@@ -42,11 +39,9 @@ impl Connection {
 }
 ````
 
-## Example
+## Пример
 
-Instead of typing all of this boilerplate to create a `Connection` and
-`Request`, it is easier to just create a wrapping helper function which takes
-them as arguments:
+Вместо того, чтобы набирать все эти шаблоны для создания `Connection` и `Request`, легче создать обертывающую вспомогательную функцию, которая принимает их в качестве аргументов:
 
 ````rust,ignore
 struct Connection {
@@ -70,25 +65,18 @@ impl Connection {
 }
 ````
 
-**Note** in the above example the line `assert!(response.is_ok());` will not
-actually run while testing because it is inside a function which is never
-invoked.
+**Примечание** в приведенном выше примере строка `assert!(response.is_ok());` на самом деле не будет запущена во время тестирования, потому что она находится внутри функции, которая никогда не вызывается.
 
-## Advantages
+## Преимущества
 
-This is much more concise and avoids repetitive code in examples.
+Это намного более кратко и избегает повторяющегося кода в примерах.
 
-## Disadvantages
+## Недостатки
 
-As example is in a function, the code will not be tested. Though it will still be
-checked to make sure it compiles when running a `cargo test`. So this pattern is
-most useful when you need `no_run`. With this, you do not need to add `no_run`.
+Поскольку пример находится в функции, код не будет протестирован. Хотя он все еще будет проверен, чтобы убедиться, что он компилируется при запуске `cargo test`. Поэтому этот шаблон наиболее полезен, когда вам нужен `no_run`. С этим вам не нужно добавлять `no_run`.
 
-## Discussion
+## Обсуждение
 
-If assertions are not required this pattern works well.
+Если утверждения не требуются, этот шаблон работает хорошо.
 
-If they are, an alternative can be to create a public method to create a helper
-instance which is annotated with `#[doc(hidden)]` (so that users won't see it).
-Then this method can be called inside of rustdoc because it is part of the
-crate's public API.
+Если они есть, альтернативой может быть создание общедоступного метода для создания вспомогательного экземпляра, который аннотирован с `#[doc(hidden)]` (чтобы пользователи его не видели). Затем этот метод может быть вызван внутри rustdoc, потому что он является частью общедоступного API крейта.

@@ -1,21 +1,21 @@
-# Lenses and Prisms
+# Линзы и призмы
 
-This is a pure functional concept that is not frequently used in Rust.
-Nevertheless, exploring the concept may be helpful to understand other
-patterns in Rust APIs, such as [visitors](../patterns/behavioural/visitor.md).
-They also have niche use cases.
+Это чисто функциональный концепт, который не часто используется в Rust.
+Тем не менее, изучение концепции может быть полезно для понимания других
+шаблонов в Rust API, таких как [посетители](../patterns/behavioural/visitor.md).
+Они также имеют узкую область применения.
 
-## Lenses: Uniform Access Across Types
+## Линзы: единый доступ к типам
 
-A lens is a concept from functional programming languages that allows
-accessing parts of a data type in an abstract, unified way.[^1]
-In basic concept, it is similar to the way Rust traits work with type erasure,
-but it has a bit more power and flexibility.
+Линза - это концепция из языков функционального программирования, которая позволяет
+обращаться к частям типа данных в абстрактном, унифицированном виде.[^1]
+В основном концептуальном плане это похоже на то, как работают трейты Rust с
+стиранием типов, но оно имеет немного больше мощности и гибкости.
 
-For example, suppose a bank contains several JSON formats for customer
-data.
-This is because they come from different databases or legacy systems.
-One database contains the data needed to perform credit checks:
+Например, предположим, что в банке содержится несколько форматов JSON для клиентов
+данных.
+Это происходит потому, что они поступают из разных баз данных или устаревших систем.
+Одна база данных содержит данные, необходимые для выполнения проверки кредита:
 
 ```json
 { "name": "Jane Doe",
@@ -25,7 +25,7 @@ One database contains the data needed to perform credit checks:
 }
 ```
 
-Another one contains the account information:
+Другая содержит информацию об учетной записи:
 
 ```json
 { "customer_id": 1048576332,
@@ -44,11 +44,11 @@ Another one contains the account information:
 }
 ```
 
-Notice that both types have a customer ID number which corresponds to a person.
-How would a single function handle both records of different types?
+Обратите внимание, что оба типа имеют номер идентификации клиента, который соответствует человеку.
+Как одна функция может обрабатывать оба записи разных типов?
 
-In Rust, a `struct` could represent each of these types, and a trait would have
-a `get_customer_id` function they would implement:
+В Rust `struct` может представлять каждый из этих типов, и трейт будет иметь
+функцию `get_customer_id`, которую они реализуют:
 
 ```rust
 use std::collections::HashSet;
@@ -101,14 +101,14 @@ fn unique_ids_iter<I>(iterator: I) -> HashSet<u64>
 }
 ```
 
-Lenses, however, allow the code supporting customer ID to be moved from the
-_type_ to the _accessor function_.
-Rather than implementing a trait on each type, all matching structures can
-simply be accessed the same way.
+Однако линзы позволяют переместить код, поддерживающий идентификатор клиента, из
+типа в функцию доступа.
+Вместо реализации трейта на каждом типе все соответствующие структуры могут
+быть просто доступны одним и тем же способом.
 
-While the Rust language itself does not support this (type erasure is the
-preferred solution to this problem), the [lens-rs crate](https://github.com/TOETOE55/lens-rs/blob/master/guide.md) allows code
-that feels like this to be written with macros:
+Хотя сам язык Rust этого не поддерживает (стирание типов является
+предпочтительным решением этой проблемы), [крейт lens-rs](https://github.com/TOETOE55/lens-rs/blob/master/guide.md) позволяет написать код,
+который выглядит как это с помощью макросов:
 
 ```rust,ignore
 use std::collections::HashSet;
@@ -146,44 +146,43 @@ where
 }
 ```
 
-The version of `unique_ids_lens` shown here allows any type to be in the iterator,
-so long as it has an attribute called `customer_id` which can be accessed by
-the function.
-This is how most functional programming languages operate on lenses.
+Показанная здесь версия `unique_ids_lens` позволяет использовать любой тип в итераторе,
+пока у него есть атрибут с именем `customer_id`, к которому можно получить доступ через
+функцию.
+Так работают большинство языков функционального программирования на линзах.
 
-Rather than macros, they achieve this with a technique known as "currying".
-That is, they "partially construct" the function, leaving the type of the
-final parameter (the value being operated on) unfilled until the function is
-called.
-Thus it can be called with different types dynamically even from one place in
-the code.
-That is what the `optics!` and `view_ref` in the example above simulates.
+Вместо макросов они достигают этого с помощью техники, известной как "каррирование".
+То есть они "частично конструируют" функцию, оставляя тип
+последнего параметра (значение, над которым выполняется операция) незаполненным до тех пор, пока функция не
+будет вызвана.
+Таким образом, его можно вызывать с разными типами динамически даже из одного места в
+коде.
+Это то, что имитируют `optics!` и `view_ref` в приведенном выше примере.
 
-The functional approach need not be restricted to accessing members.
-More powerful lenses can be created which both _set_ and _get_ data in a
-structure.
-But the concept really becomes interesting when used as a building block for
-composition.
-That is where the concept appears more clearly in Rust.
+Функциональный подход не обязательно ограничивается доступом к членам.
+Можно создавать более мощные линзы, которые как _устанавливают_, так и _получают_ данные в
+структуре.
+Но концепция действительно становится интересной, когда используется в качестве строительного блока для
+композиции.
+Именно там концепция становится более ясной в Rust.
 
-## Prisms: A Higher-Order form of "Optics"
+## Призмы: высший порядок формы "оптики"
 
-A simple function such as `unique_ids_lens` above operates on a single lens.
-A _prism_ is a function that operates on a _family_ of lenses.
-It is one conceptual level higher, using lenses as a building block, and
-continuing the metaphor, is part of a family of "optics".
-It is the main one that is useful in understanding Rust APIs, so will be the
-focus here.
+Простая функция, такая как `unique_ids_lens` выше, работает с одной линзой.
+_Призма_ - это функция, которая работает с _семейством_ линз.
+Она находится на одном концептуальном уровне выше, используя линзы в качестве строительного блока, и
+продолжая метафору, является частью семейства "оптики".
+Это главное, что полезно для понимания Rust API, поэтому здесь будет фокус.
 
-The same way that traits allow "lens-like" design with static polymorphism and
-dynamic dispatch, prism-like designs appear in Rust APIs which split problems
-into multiple associated types to be composed.
-A good example of this is the traits in the parsing crate _Serde_.
+Точно так же, как трейты позволяют проектировать "подобные линзам" с помощью статического полиморфизма и
+динамическая отправка, призмоподобные конструкции появляются в Rust API, которые разбивают проблемы
+на несколько связанных типов для композиции.
+Хорошим примером этого являются трейты в крейте парсинга _Serde_.
 
-Trying to understand the way _Serde_ works by only reading the API is a
-challenge, especially the first time.
-Consider the `Deserializer` trait, implemented by some type in any library
-which parses a new format:
+Попытка понять, как работает _Serde_, только читая API, является
+сложной задачей, особенно в первый раз.
+Рассмотрим трейт `Deserializer`, реализованный некоторым типом в любой библиотеке,
+которая разбирает новый формат:
 
 ```rust,ignore
 pub trait Deserializer<'de>: Sized {
@@ -201,165 +200,9 @@ pub trait Deserializer<'de>: Sized {
 }
 ```
 
-For a trait that is just supposed to parse data from a format and return a
-value, this looks odd.
+Для трейта, который должен только разбирать данные из формата и возвращать
+значение, это выглядит странно.
 
-Why are all the return types type erased?
+Почему все типы возвращаемых значений стираются?
 
-To understand that, we need to keep the lens concept in mind and look at
-the definition of the `Visitor` type that is passed in generically:
-
-```rust,ignore
-pub trait Visitor<'de>: Sized {
-    type Value;
-
-    fn visit_bool<E>(self, v: bool) -> Result<Self::Value, E>
-    where
-        E: Error;
-
-    fn visit_u64<E>(self, v: u64) -> Result<Self::Value, E>
-    where
-        E: Error;
-
-    fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
-    where
-        E: Error;
-
-    // remainder omitted
-}
-```
-
-The job of the `Visitor` type is to construct values in the _Serde_ data model,
-which are represented by its associated `Value` type.
-
-These values represent parts of the Rust value being deserialized.
-If this fails, it returns an `Error` type - an error type determined by the
-`Deserializer` when its methods were called.
-
-This highlights that `Deserializer` is similar to `CustomerId` from earlier,
-allowing any format parser which implements it to create `Value`s based on what
-it parsed.
-The `Value` trait is acting like a lens in functional programming languages.
-
-But unlike the `CustomerId` trait, the return types of `Visitor` methods are
-_generic_, and the concrete `Value` type is _determined by the Visitor itself_.
-
-Instead of acting as one lens, it effectively acts as a family of
-lenses, one for each concrete type of `Visitor`.
-
-The `Deserializer` API is based on having a generic set of "lenses" work across
-a set of other generic types for "observation".
-It is a _prism_.
-
-For example, consider the identity record from earlier but simplified:
-
-```json
-{ "name": "Jane Doe",
-  "customer_id": 1048576332,
-}
-```
-
-How would the _Serde_ library deserialize this JSON into `struct CreditRecord`?
-
-1. The user would call a library function to deserialize the data. This would
-   create a `Deserializer` based on the JSON format.
-1. Based on the fields in the struct, a `Visitor` would be created (more on
-   that in a moment) which knows how to create each type in a generic data
-   model that was needed to represent it: `u64` and `String`.
-1. The deserializer would make calls to the `Visitor` as it parsed items.
-1. The `Visitor` would indicate if the items found were expected, and if not,
-   raise an error to indicate deserialization has failed.
-
-For our very simple structure above, the expected pattern would be:
-
-1. Visit a map (_Serde_'s equvialent to `HashMap` or JSON's dictionary).
-1. Visit a string key called "name".
-1. Visit a string value, which will go into the `name` field.
-1. Visit a string key called "customer_id".
-1. Visit a string value, which will go into the `customer_id` field.
-1. Visit the end of the map.
-
-But what determines which "observation" pattern is expected?
-
-A functional programming language would be able to use currying to create
-reflection of each type based on the type itself.
-Rust does not support that, so every single type would need to have its own
-code written based on its fields and their properties.
-
-_Serde_ solves this usability challenge with a derive macro:
-
-```rust,ignore
-use serde::Deserialize;
-
-#[derive(Deserialize)]
-struct IdRecord {
-    name: String,
-    customer_id: String,
-}
-```
-
-That macro simply generates an impl block causing the struct to implement a
-trait called `Deserialize`.
-
-It is defined this way:
-
-```rust,ignore
-pub trait Deserialize<'de>: Sized {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: Deserializer<'de>;
-}
-```
-
-This is the function that determines how to create the struct itself.
-Code is generated based on the struct's fields.
-When the parsing library is called - in our example, a JSON parsing library -
-it creates a `Deserializer` and calls `Type::deserialize` with it as a
-parameter.
-
-The `deserialize` code will then create a `Visitor` which will have its calls
-"refracted" by the `Deserializer`.
-If everything goes well, eventually that `Visitor` will construct a value
-corresponding to the type being parsed and return it.
-
-For a complete example, see the [_Serde_ documentation](https://serde.rs/deserialize-struct.html).
-
-To wrap up, this is the power of _Serde_:
-
-1. The structure being parsed is represented by an `impl` block for `Deserialize`
-1. The input data format (e.g. JSON) is represented by a `Deserializer` called
-   by `Deserialize`
-1. The `Deserializer` acts like a prism which "refracts" lens-like `Visitor`
-   calls which actually build the data value
-
-The result is that types to be deserialized only implement the "top layer" of
-the API, and file formats only need to implement the "bottom layer".
-Each piece can then "just work" with the rest of the ecosystem, since generic
-types will bridge them.
-
-To emphasize, the only reason this model works on any format and any type is
-because the `Deserializer` trait's output type **is specified by the
-implementor of `Visitor` it is passed**, rather than being tied to one specific
-type.
-This was not true in the account example earlier.
-
-Rust's generic-inspired type system can bring it close to these concepts and
-use their power, as shown in this API design.
-But it may also need procedural macros to create bridges for its generics.
-
-## See Also
-
-- [lens-rs crate](https://crates.io/crates/lens-rs) for a pre-built lenses
-  implementation, with a cleaner interface than these examples
-- [serde](https://serde.rs) itself, which makes these concepts intuitive for
-  end users (i.e. defining the structs) without needing to undestand the
-  details
-- [luminance](https://github.com/phaazon/luminance-rs) is a crate for drawing
-  computer graphics that uses lens API design, including proceducal macros to
-  create full prisms for buffers of different pixel types that remain generic
-- [An Article about Lenses in Scala](https://web.archive.org/web/20221128185849/https://medium.com/zyseme-technology/functional-references-lens-and-other-optics-in-scala-e5f7e2fdafe)
-  that is very readable even without Scala expertise.
-- [Paper: Profunctor Optics: Modular Data
-  Accessors](https://web.archive.org/web/20220701102832/https://arxiv.org/ftp/arxiv/papers/1703/1703.10857.pdf)
-
-[^1]: [School of Haskell: A Little Lens Starter Tutorial](https://web.archive.org/web/20221128190041/https://www.schoolofhaskell.com/school/to-infinity-and-beyond/pick-of-the-week/a-little-lens-starter-tutorial)
+Чтобы понять

@@ -1,13 +1,12 @@
-# On-Stack Dynamic Dispatch
+# Динамическая диспетчеризация на стеке
 
-## Description
+## Описание
 
-We can dynamically dispatch over multiple values, however, to do so, we need
-to declare multiple variables to bind differently-typed objects. To extend the
-lifetime as necessary, we can use deferred conditional initialization, as seen
-below:
+Мы можем динамически диспетчеризовать несколько значений, однако для этого нам нужно
+объявить несколько переменных для привязки объектов разных типов. Чтобы продлить
+время жизни по мере необходимости, мы можем использовать отложенную условную инициализацию, как показано ниже:
 
-## Example
+## Пример
 
 ```rust
 use std::io;
@@ -34,26 +33,23 @@ let readable: &mut dyn io::Read = if arg == "-" {
 # }
 ```
 
-## Motivation
+## Мотивация
 
-Rust monomorphises code by default. This means a copy of the code will be
-generated for each type it is used with and optimized independently. While this
-allows for very fast code on the hot path, it also bloats the code in places
-where performance is not of the essence, thus costing compile time and cache
-usage.
+Rust мономорфизирует код по умолчанию. Это означает, что копия кода будет
+сгенерирована для каждого типа, с которым он используется, и оптимизирована независимо. Хотя это
+позволяет получить очень быстрый код на горячем пути, это также увеличивает размер кода в местах,
+где производительность не является существенной, что стоит время компиляции и кэша.
 
-Luckily, Rust allows us to use dynamic dispatch, but we have to explicitly ask
-for it.
+К счастью, Rust позволяет нам использовать динамическую диспетчеризацию, но мы должны явно запросить ее.
 
-## Advantages
+## Преимущества
 
-We do not need to allocate anything on the heap. Neither do we need to
-initialize something we won't use later, nor do we need to monomorphize the
-whole code that follows to work with both `File` or `Stdin`.
+Нам не нужно выделять ничего на куче. Мы также не нуждаемся в инициализации чего-то, что мы не будем использовать позже, и не нужно мономорфизировать
+весь код, который следует работать как с `File`, так и с `Stdin`.
 
-## Disadvantages
+## Недостатки
 
-The code needs more moving parts than the `Box`-based version:
+Код нуждается в большем количестве подвижных частей, чем версия на основе `Box`:
 
 ```rust,ignore
 // We still need to ascribe the type for dynamic dispatch.
@@ -65,28 +61,28 @@ let readable: Box<dyn io::Read> = if arg == "-" {
 // Read from `readable` here.
 ```
 
-## Discussion
+## Обсуждение
 
-Rust newcomers will usually learn that Rust requires all variables to be
-initialized _before use_, so it's easy to overlook the fact that _unused_
-variables may well be uninitialized. Rust works quite hard to ensure that this
-works out fine and only the initialized values are dropped at the end of their
-scope.
+Новички в Rust обычно узнают, что Rust требует, чтобы все переменные были
+инициализированы _перед использованием_, поэтому легко пропустить тот факт, что _неиспользуемые_
+переменные могут быть неинициализированы. Rust работает довольно усердно, чтобы гарантировать, что это
+работает хорошо и только инициализированные значения сбрасываются в конце их
+области видимости.
 
-The example meets all the constraints Rust places on us:
+Пример соответствует всем ограничениям, которые Rust накладывает на нас:
 
-- All variables are initialized before using (in this case borrowing) them
-- Each variable only holds values of a single type. In our example, `stdin` is
-  of type `Stdin`, `file` is of type `File` and `readable` is of type `&mut dyn Read`
-- Each borrowed value outlives all the references borrowed from it
+- Все переменные инициализируются перед использованием (в данном случае заимствованием) их
+- Каждая переменная содержит только значения одного типа. В нашем примере `stdin` имеет
+  тип `Stdin`, `file` имеет тип `File`, а `readable` имеет тип `&mut dyn Read`
+- Каждое заимствованное значение превосходит все ссылки, заимствованные из него
 
-## See also
+## Смотрите также
 
-- [Finalisation in destructors](dtor-finally.md) and
-  [RAII guards](../patterns/behavioural/RAII.md) can benefit from tight control over
-  lifetimes.
-- For conditionally filled `Option<&T>`s of (mutable) references, one can
-  initialize an `Option<T>` directly and use its [`.as_ref()`] method to get an
-  optional reference.
+- [Финализация в деструкторах](dtor-finally.md) и
+  [RAII-стражи](../patterns/behavioural/RAII.md) могут получить выгоду от тесного контроля над
+  временами жизни.
+- Для условно заполненных `Option<&T>` (изменяемых) ссылок можно
+  инициализировать `Option<T>` напрямую и использовать его метод [`.as_ref()`], чтобы получить
+  необязательную ссылку.
 
 [`.as_ref()`]: https://doc.rust-lang.org/std/option/enum.Option.html#method.as_ref

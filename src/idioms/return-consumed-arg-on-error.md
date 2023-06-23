@@ -1,11 +1,10 @@
-# Return consumed argument on error
+# Возвратить потребленный аргумент при ошибке
 
-## Description
+## Описание
 
-If a fallible function consumes (moves) an argument, return that argument back inside
-an error.
+Если функция, которая может вернуть ошибку, потребляет (перемещает) аргумент, то вернуть этот аргумент внутри ошибки.
 
-## Example
+## Пример
 
 ```rust
 pub fn send(value: String) -> Result<(), SendError> {
@@ -40,22 +39,16 @@ fn main() {
 }
 ```
 
-## Motivation
+## Мотивация
 
-In case of error you may want to try some alternative way or to
-retry action in case of non-deterministic function. But if the argument
-is always consumed, you are forced to clone it on every call, which
-is not very efficient.
+В случае ошибки вы можете захотеть попробовать альтернативный путь или повторить действие в случае недетерминированной функции. Но если аргумент всегда потребляется, то вы вынуждены клонировать его при каждом вызове, что не очень эффективно.
 
-The standard library uses this approach in e.g. `String::from_utf8` method.
-When given a vector that doesn't contain valid UTF-8, a `FromUtf8Error`
-is returned.
-You can get original vector back using `FromUtf8Error::into_bytes` method.
+Стандартная библиотека использует этот подход, например, в методе `String::from_utf8`. Если дан вектор, который не содержит допустимый UTF-8, возвращается `FromUtf8Error`. Вы можете получить исходный вектор обратно, используя метод `FromUtf8Error::into_bytes`.
 
-## Advantages
+## Преимущества
 
-Better performance because of moving arguments whenever possible.
+Лучшая производительность за счет перемещения аргументов, когда это возможно.
 
-## Disadvantages
+## Недостатки
 
-Slightly more complex error types.
+Немного более сложные типы ошибок.

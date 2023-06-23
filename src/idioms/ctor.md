@@ -1,9 +1,9 @@
-# Constructors
+## Конструкторы
 
-## Description
+### Описание
 
-Rust does not have constructors as a language construct. Instead, the
-convention is to use an [associated function][associated function] `new` to create an object:
+Rust не имеет конструкторов как языковую конструкцию. Вместо этого
+соглашением является использование [ассоциированной функции][associated function] `new` для создания объекта:
 
 ````rust
 /// Time in seconds.
@@ -32,9 +32,9 @@ impl Second {
 }
 ````
 
-## Default Constructors
+### Конструкторы по умолчанию
 
-Rust supports default constructors with the [`Default`][std-default] trait:
+Rust поддерживает конструкторы по умолчанию с помощью трейта [`Default`][std-default]:
 
 ````rust
 /// Time in seconds.
@@ -63,8 +63,8 @@ impl Default for Second {
 }
 ````
 
-`Default` can also be derived if all types of all fields implement `Default`,
-like they do with `Second`:
+`Default` также может быть получен автоматически, если все типы всех полей реализуют `Default`,
+как это делается с `Second`:
 
 ````rust
 /// Time in seconds.
@@ -88,26 +88,22 @@ impl Second {
 }
 ````
 
-**Note:** It is common and expected for types to implement both
-`Default` and an empty `new` constructor. `new` is the constructor
-convention in Rust, and users expect it to exist, so if it is
-reasonable for the basic constructor to take no arguments, then it
-should, even if it is functionally identical to default.
+**Примечание:** Распространенно и ожидаемо, что типы реализуют как `Default`, так и пустой конструктор `new`. `new` является соглашением о конструкторе в Rust, и пользователи ожидают его наличия, поэтому, если базовый конструктор может не принимать аргументы, то он должен существовать, даже если он функционально идентичен `default`.
 
-**Hint:** The advantage of implementing or deriving `Default` is that your type
-can now be used where a `Default` implementation is required, most prominently,
-any of the [`*or_default` functions in the standard library][std-or-default].
+**Подсказка:** Преимущество реализации или получения `Default` заключается в том, что ваш тип
+теперь может использоваться там, где требуется реализация `Default`, наиболее заметно,
+любые из [`*or_default` функций в стандартной библиотеке][std-or-default].
 
-## See also
+### Смотрите также
 
-- The [default idiom](default.md) for a more in-depth description of the
-  `Default` trait.
+- [Идиома по умолчанию](default.md) для более подробного описания
+  трейта `Default`.
 
-- The [builder pattern](../patterns/creational/builder.md) for constructing
-  objects where there are multiple configurations.
+- [Шаблон строителя](../patterns/creational/builder.md) для создания
+  объектов, где есть несколько конфигураций.
 
-- [API Guidelines/C-COMMON-TRAITS][API Guidelines/C-COMMON-TRAITS] for
-  implementing both, `Default` and `new`.
+- [API Guidelines/C-COMMON-TRAITS][API Guidelines/C-COMMON-TRAITS] для
+  реализации как `Default`, так и `new`.
 
 [associated function]: https://doc.rust-lang.org/stable/book/ch05-03-method-syntax.html#associated-functions
 [std-default]: https://doc.rust-lang.org/stable/std/default/trait.Default.html

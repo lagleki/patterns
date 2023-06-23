@@ -1,16 +1,12 @@
-# Visitor
+# Посетитель
 
-## Description
+## Описание
 
-A visitor encapsulates an algorithm that operates over a heterogeneous
-collection of objects. It allows multiple different algorithms to be written
-over the same data without having to modify the data (or their primary
-behaviour).
+Посетитель инкапсулирует алгоритм, который работает с гетерогенной коллекцией объектов. Он позволяет написать несколько различных алгоритмов для одних и тех же данных, не изменяя сами данные (или их основное поведение).
 
-Furthermore, the visitor pattern allows separating the traversal of
-a collection of objects from the operations performed on each object.
+Кроме того, паттерн посетитель позволяет разделить обход коллекции объектов и операции, выполняемые над каждым объектом.
 
-## Example
+## Пример
 
 ```rust,ignore
 // The data we will visit
@@ -66,23 +62,15 @@ impl Visitor<i64> for Interpreter {
 }
 ```
 
-One could implement further visitors, for example a type checker, without having
-to modify the AST data.
+Можно реализовать дополнительные посетители, например, проверку типов, не изменяя данных AST.
 
-## Motivation
+## Мотивация
 
-The visitor pattern is useful anywhere that you want to apply an algorithm to
-heterogeneous data. If data is homogeneous, you can use an iterator-like pattern.
-Using a visitor object (rather than a functional approach) allows the visitor to
-be stateful and thus communicate information between nodes.
+Паттерн посетитель полезен везде, где нужно применять алгоритм к гетерогенным данным. Если данные однородны, можно использовать паттерн, похожий на итератор. Использование объекта посетителя (а не функционального подхода) позволяет сделать посетителя состояний и, таким образом, обмениваться информацией между узлами.
 
-## Discussion
+## Обсуждение
 
-It is common for the `visit_*` methods to return void (as opposed to in the
-example). In that case it is possible to factor out the traversal code and share
-it between algorithms (and also to provide noop default methods). In Rust, the
-common way to do this is to provide `walk_*` functions for each datum. For
-example,
+Обычно методы `visit_*` возвращают `void` (в отличие от примера). В этом случае можно выделить код обхода и использовать его между алгоритмами (а также предоставить методы по умолчанию). В Rust обычно используются функции `walk_*` для каждого элемента данных. Например,
 
 ```rust,ignore
 pub fn walk_expr(visitor: &mut Visitor, e: &Expr) {
@@ -100,14 +88,12 @@ pub fn walk_expr(visitor: &mut Visitor, e: &Expr) {
 }
 ```
 
-In other languages (e.g., Java) it is common for data to have an `accept` method
-which performs the same duty.
+В других языках (например, в Java) обычно у данных есть метод `accept`, который выполняет ту же функцию.
 
-## See also
+## Смотрите также
 
-The visitor pattern is a common pattern in most OO languages.
+Паттерн посетитель является распространенным в большинстве объектно-ориентированных языков.
 
-[Wikipedia article](https://en.wikipedia.org/wiki/Visitor_pattern)
+[Статья на Википедии](https://en.wikipedia.org/wiki/Visitor_pattern)
 
-The [fold](../creational/fold.md) pattern is similar to visitor but produces
-a new version of the visited data structure.
+Паттерн [fold](../creational/fold.md) похож на посетитель, но создает новую версию посещаемой структуры данных.

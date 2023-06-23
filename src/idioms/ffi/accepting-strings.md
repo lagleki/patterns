@@ -1,32 +1,25 @@
-# Accepting Strings
+# Принятие строк
 
-## Description
+## Описание
 
-When accepting strings via FFI through pointers, there are two principles that
-should be followed:
+При принятии строк через FFI через указатели, следует придерживаться двух принципов:
 
-1. Keep foreign strings "borrowed", rather than copying them directly.
-2. Minimize the amount of complexity and `unsafe` code involved in converting
-   from a C-style string to native Rust strings.
+1. Храните иностранные строки "заимствованными", а не копируйте их напрямую.
+2. Минимизируйте количество сложности и `unsafe` кода, связанного с преобразованием из строки в стиле C в собственные строки Rust.
 
-## Motivation
+## Мотивация
 
-The strings used in C have different behaviours to those used in Rust, namely:
+Строки, используемые в C, имеют другое поведение, чем те, которые используются в Rust, а именно:
 
-- C strings are null-terminated while Rust strings store their length
-- C strings can contain any arbitrary non-zero byte while Rust strings must be
-  UTF-8
-- C strings are accessed and manipulated using `unsafe` pointer operations
-  while interactions with Rust strings go through safe methods
+- Строки C завершаются нулем, в то время как строки Rust хранят свою длину.
+- Строки C могут содержать любой произвольный ненулевой байт, в то время как строки Rust должны быть в формате UTF-8.
+- Строки C доступны и манипулируются с помощью операций указателя `unsafe`, в то время как взаимодействие со строками Rust происходит через безопасные методы.
 
-The Rust standard library comes with C equivalents of Rust's `String` and `&str`
-called `CString` and `&CStr`, that allow us to avoid a lot of the complexity
-and `unsafe` code involved in converting between C strings and Rust strings.
+Стандартная библиотека Rust поставляется с эквивалентами C для `String` и `&str` Rust, называемыми `CString` и `&CStr`, которые позволяют нам избежать многих сложностей и `unsafe` кода, связанного с преобразованием между строками C и строками Rust.
 
-The `&CStr` type also allows us to work with borrowed data, meaning passing
-strings between Rust and C is a zero-cost operation.
+Тип `&CStr` также позволяет нам работать с заимствованными данными, что означает, что передача строк между Rust и C является операцией с нулевой стоимостью.
 
-## Code Example
+## Пример кода
 
 ```rust,ignore
 pub mod unsafe_module {
@@ -65,15 +58,14 @@ pub mod unsafe_module {
 }
 ```
 
-## Advantages
+## Преимущества
 
-The example is is written to ensure that:
+Пример написан таким образом, чтобы:
 
-1. The `unsafe` block is as small as possible.
-2. The pointer with an "untracked" lifetime becomes a "tracked" shared
-   reference
+1. Блок `unsafe` был как можно меньше.
+2. Указатель с "ненаблюдаемым" временем жизни становится "наблюдаемым" общим ссылкой.
 
-Consider an alternative, where the string is actually copied:
+Рассмотрим альтернативу, где строка фактически копируется:
 
 ```rust,ignore
 pub mod unsafe_module {
@@ -117,27 +109,17 @@ pub mod unsafe_module {
 }
 ```
 
-This code in inferior to the original in two respects:
+Этот код уступает оригиналу в двух отношениях:
 
-1. There is much more `unsafe` code, and more importantly, more invariants it
-   must uphold.
-2. Due to the extensive arithmetic required, there is a bug in this version
-   that cases Rust `undefined behaviour`.
+1. Есть гораздо больше `unsafe` кода, и, что более важно, больше инвариантов, которые он должен соблюдать.
+2. Из-за обширной арифметики есть ошибка в этой версии, которая вызывает `undefined behaviour` в Rust.
 
-The bug here is a simple mistake in pointer arithmetic: the string was copied,
-all `msg_len` bytes of it. However, the `NUL` terminator at the end was not.
+Ошибка здесь заключается в простой ошибке в арифметике указателей: строка была скопирована, все `msg_len` байтов. Однако завершающий `NUL` не был скопирован.
 
-The Vector then had its size _set_ to the length of the _zero padded string_ --
-rather than _resized_ to it, which could have added a zero at the end.
-As a result, the last byte in the Vector is uninitialized memory.
-When the `CString` is created at the bottom of the block, its read of the
-Vector will cause `undefined behaviour`!
+Затем вектор был _установлен_ на длину _нулевой заполненной строки_, а не _изменен_ на нее, что могло бы добавить ноль в конце. В результате последний байт в векторе является неинициализированной памятью. Когда `CString` создается внизу блока, его чтение из вектора вызовет `undefined behaviour`!
 
-Like many such issues, this would be difficult issue to track down.
-Sometimes it would panic because the string was not `UTF-8`, sometimes it would
-put a weird character at the end of the string, sometimes it would just
-completely crash.
+Как и многие подобные проблемы, это было бы трудно отследить. Иногда он вызывал бы панику, потому что строка не была `UTF-8`, иногда он добавлял бы странный символ в конец строки, иногда он просто полностью завершал работу.
 
-## Disadvantages
+## Недостатки
 
-None?
+Нет?

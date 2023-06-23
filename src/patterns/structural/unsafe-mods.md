@@ -1,34 +1,25 @@
-# Contain unsafety in small modules
+# Содержание небезопасности в маленьких модулях
 
-## Description
+## Описание
 
-If you have `unsafe` code, create the smallest possible module that can uphold
-the needed invariants to build a minimal safe interface upon the unsafety. Embed
-this into a larger module that contains only safe code and presents an ergonomic
-interface. Note that the outer module can contain unsafe functions and methods
-that call directly into the unsafe code. Users may use this to gain speed benefits.
+Если у вас есть `unsafe` код, создайте наименьший возможный модуль, который может поддерживать необходимые инварианты для построения минимального безопасного интерфейса на основе небезопасности. Вставьте это в более крупный модуль, который содержит только безопасный код и представляет эргономичный интерфейс. Обратите внимание, что внешний модуль может содержать небезопасные функции и методы, которые напрямую вызывают небезопасный код. Пользователи могут использовать это, чтобы получить преимущества в скорости.
 
-## Advantages
+## Преимущества
 
-- This restricts the unsafe code that must be audited
-- Writing the outer module is much easier, since you can count on the guarantees
-  of the inner module
+- Это ограничивает небезопасный код, который должен быть проверен
+- Написание внешнего модуля намного проще, так как вы можете полагаться на гарантии внутреннего модуля
 
-## Disadvantages
+## Недостатки
 
-- Sometimes, it may be hard to find a suitable interface.
-- The abstraction may introduce inefficiencies.
+- Иногда может быть трудно найти подходящий интерфейс.
+- Абстракция может вводить неэффективности.
 
-## Examples
+## Примеры
 
-- The [`toolshed`](https://docs.rs/toolshed) crate contains its unsafe operations
-  in submodules, presenting a safe interface to users.
-- `std`'s `String` class is a wrapper over `Vec<u8>` with the added invariant
-  that the contents must be valid UTF-8. The operations on `String` ensure this
-  behavior.
-  However, users have the option of using an `unsafe` method to create a `String`,
-  in which case the onus is on them to guarantee the validity of the contents.
+- Крейт [`toolshed`](https://docs.rs/toolshed) содержит свои небезопасные операции в подмодулях, представляя безопасный интерфейс для пользователей.
+- Класс `String` из `std` является оберткой над `Vec<u8>` с добавленным инвариантом, что содержимое должно быть действительным UTF-8. Операции над `String` гарантируют это поведение.
+  Однако пользователи могут использовать `unsafe` метод для создания `String`, в этом случае на них лежит ответственность за гарантию действительности содержимого.
 
-## See also
+## Смотрите также
 
-- [Ralf Jung's Blog about invariants in unsafe code](https://www.ralfj.de/blog/2018/08/22/two-kinds-of-invariants.html)
+- [Блог Ральфа Юнга о инвариантах в небезопасном коде](https://www.ralfj.de/blog/2018/08/22/two-kinds-of-invariants.html)

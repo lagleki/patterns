@@ -1,34 +1,33 @@
-# Strategy (aka Policy)
+# Стратегия (также известна как Политика)
 
-## Description
+## Описание
 
-The [Strategy design pattern](https://en.wikipedia.org/wiki/Strategy_pattern)
-is a technique that enables separation of concerns.
-It also allows to decouple software modules through [Dependency Inversion](https://en.wikipedia.org/wiki/Dependency_inversion_principle).
+[Шаблон проектирования Стратегия](https://ru.wikipedia.org/wiki/%D0%A8%D0%B0%D0%B1%D0%BB%D0%BE%D0%BD_%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F#.D0.A1.D1.82.D1.80.D0.B0.D1.82.D0.B5.D0.B3.D0.B8.D1.8F)
+- это техника, которая позволяет разделить заботы.
+Он также позволяет отделить модули программного обеспечения через [Принцип инверсии зависимостей](https://ru.wikipedia.org/wiki/%D0%9F%D1%80%D0%B8%D0%BD%D1%86%D0%B8%D0%BF_%D0%B8%D0%BD%D0%B2%D0%B5%D1%80%D1%81%D0%B8%D0%B8_%D0%B7%D0%B0%D0%B2%D0%B8%D1%81%D0%B8%D0%BC%D0%BE%D1%81%D1%82%D0%B5%D0%B9).
 
-The basic idea behind the Strategy pattern is that, given an algorithm solving
-a particular problem, we define only the skeleton of the algorithm at an abstract
-level, and we separate the specific algorithm’s implementation into different parts.
+Основная идея, лежащая в основе шаблона Стратегия, заключается в том, что, имея алгоритм решения
+определенной проблемы, мы определяем только скелет алгоритма на абстрактном
+уровне, и мы разделяем конкретную реализацию алгоритма на разные части.
 
-In this way, a client using the algorithm may choose a specific implementation,
-while the general algorithm workflow remains the same. In other words, the abstract
-specification of the class does not depend on the specific implementation of the
-derived class, but specific implementation must adhere to the abstract specification.
-This is why we call it "Dependency Inversion".
+Таким образом, клиент, использующий алгоритм, может выбрать конкретную реализацию,
+в то время как общий рабочий процесс алгоритма остается неизменным. Другими словами, абстрактная
+спецификация класса не зависит от конкретной реализации производного класса, но конкретная реализация
+должна соответствовать абстрактной спецификации. Вот почему мы называем это "Инверсия зависимостей".
 
-## Motivation
+## Мотивация
 
-Imagine we are working on a project that generates reports every month.
-We need the reports to be generated in different formats (strategies), e.g.,
-in `JSON` or `Plain Text` formats.
-But things vary over time, and we don't know what kind of requirement we may get
-in the future. For example, we may need to generate our report in a completely new
-format, or just modify one of the existing formats.
+Представьте, что мы работаем над проектом, который генерирует отчеты каждый месяц.
+Нам нужно, чтобы отчеты генерировались в разных форматах (стратегиях), например,
+в форматах `JSON` или `Plain Text`.
+Но вещи меняются со временем, и мы не знаем, какие требования мы можем получить
+в будущем. Например, нам может потребоваться сгенерировать наш отчет в совершенно новом
+формате или просто изменить один из существующих форматов.
 
-## Example
+## Пример
 
-In this example our invariants (or abstractions) are `Formatter` and `Report`, while `Text` and `Json` are our strategy structs. These strategies
-have to implement the `Formatter` trait.
+В этом примере наши инварианты (или абстракции) - это `Formatter` и `Report`, а `Text` и `Json` - наши стратегические структуры. Эти стратегии
+должны реализовать трейт `Formatter`.
 
 ```rust
 use std::collections::HashMap;
@@ -92,42 +91,41 @@ fn main() {
 }
 ```
 
-## Advantages
+## Преимущества
 
-The main advantage is separation of concerns. For example, in this case `Report`
-does not know anything about specific implementations of `Json` and `Text`,
-whereas the output implementations does not care about how data is preprocessed,
-stored, and fetched. The only thing they have to know is a specific
-trait to implement and its method defining the concrete algorithm implementation processing
-the result, i.e., `Formatter` and `format(...)`.
+Основное преимущество - это разделение забот. Например, в этом случае `Report`
+ничего не знает о конкретных реализациях `Json` и `Text`,
+в то время как реализации вывода не заботятся о том, как данные предварительно обрабатываются,
+хранятся и извлекаются. Единственное, что им нужно знать, это конкретный
+трейт для реализации и его метод, определяющий конкретную реализацию алгоритма обработки
+результата, т.е. `Formatter` и `format(...)`.
 
-## Disadvantages
+## Недостатки
 
-For each strategy there must be implemented at least one module, so number of modules
-increases with number of strategies. If there are many strategies to choose from
-then users have to know how strategies differ from one another.
+Для каждой стратегии должен быть реализован хотя бы один модуль, поэтому количество модулей
+увеличивается с количеством стратегий. Если есть много стратегий для выбора,
+то пользователям нужно знать, как стратегии отличаются друг от друга.
 
-## Discussion
+## Обсуждение
 
-In the previous example all strategies are implemented in a single file.
-Ways of providing different strategies includes:
+В предыдущем примере все стратегии реализованы в одном файле.
+Способы предоставления разных стратегий включают:
 
-- All in one file (as shown in this example, similar to being separated as modules)
-- Separated as modules, E.g. `formatter::json` module, `formatter::text` module
-- Use compiler feature flags, E.g. `json` feature, `text` feature
-- Separated as crates, E.g. `json` crate, `text` crate
+- Все в одном файле (как показано в этом примере, аналогично разделению на модули)
+- Разделены как модули, например, модуль `formatter::json`, модуль `formatter::text`
+- Использовать флаги функций компилятора, например, функция `json`, функция `text`
+- Разделены как ящики, например, ящик `json`, ящик `text`
 
-Serde crate is a good example of the `Strategy` pattern in action. Serde allows
-[full customization](https://serde.rs/custom-serialization.html) of the serialization
-behavior by manually implementing `Serialize` and `Deserialize` traits for our
-type. For example, we could easily swap `serde_json` with `serde_cbor` since they
-expose similar methods. Having this makes the helper crate `serde_transcode` much
-more useful and ergonomic.
+Крейт Serde - хороший пример шаблона `Strategy` в действии. Serde позволяет
+[полная настройка](https://serde.rs/custom-serialization.html) поведения сериализации путем ручной реализации трейтов `Serialize` и `Deserialize` для нашего
+тип. Например, мы могли бы легко заменить `serde_json` на `serde_cbor`, так как они
+представляют схожие методы. Иметь это делает помощник крейт `serde_transcode` намного
+более полезным и эргономичным.
 
-However, we don't need to use traits in order to design this pattern in Rust.
+Однако нам не нужно использовать трейты, чтобы разработать этот шаблон на Rust.
 
-The following toy example demonstrates the idea of the Strategy pattern using Rust
-`closures`:
+Следующий игрушечный пример демонстрирует идею шаблона Стратегия с использованием Rust
+`замыкания`:
 
 ```rust
 struct Adder;
@@ -157,7 +155,7 @@ fn main() {
 }
 ```
 
-In fact, Rust already uses this idea for `Options`'s `map` method:
+Фактически, Rust уже использует эту идею для метода `map` `Options`:
 
 ```rust
 fn main() {
@@ -171,8 +169,8 @@ fn main() {
 }
 ```
 
-## See also
+## Смотрите также
 
-- [Strategy Pattern](https://en.wikipedia.org/wiki/Strategy_pattern)
-- [Dependency Injection](https://en.wikipedia.org/wiki/Dependency_injection)
-- [Policy Based Design](https://en.wikipedia.org/wiki/Modern_C++_Design#Policy-based_design)
+- [Шаблон проектирования Стратегия](https://ru.wikipedia.org/wiki/%D0%A8%D0%B0%D0%B1%D0%BB%D0%BE%D0%BD_%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F#.D0.A1.D1.82.D1.80.D0.B0.D1.82.D0.B5.D0.B3.D0.B8.D1.8F)
+- [Внедрение зависимостей](https://ru.wikipedia.org/wiki/%D0%9F%D1%80%D0%B8%D0%BD%D1%86%D0%B8%D0%BF_%D0%B8%D0%BD%D0%B2%D0%B5%D1%80%D1%81%D0%B8%D0%B8_%D0%B7%D0%B0%D0%B2%D0%B8%D1%81%D0%B8%D0%BC%D0%BE%D1%81%D1%82%D0%B5%D0%B9)
+- [Дизайн на основе политик](https://ru.wikipedia.org/wiki/Modern_C++_Design#Policy-based_design)

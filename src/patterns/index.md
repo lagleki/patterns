@@ -1,28 +1,17 @@
-# Design Patterns
+# Шаблоны проектирования
 
-[Design patterns](https://en.wikipedia.org/wiki/Software_design_pattern) are
-"general reusable solutions to a commonly occurring problem within a given
-context in software design". Design patterns are a great way to describe the
-culture of a programming language. Design patterns are very language-specific -
-what is a pattern in one language may be unnecessary in another due to a
-language feature, or impossible to express due to a missing feature.
+[Шаблоны проектирования](https://en.wikipedia.org/wiki/Software_design_pattern) - это "общие многократно используемые решения для общих проблем в контексте проектирования программного обеспечения". Шаблоны проектирования - отличный способ описать культуру языка программирования. Шаблоны проектирования очень зависят от языка - то, что является шаблоном в одном языке, может быть ненужным в другом из-за особенностей языка или невозможности выразить из-за отсутствия функции.
 
-If overused, design patterns can add unnecessary complexity to programs.
-However, they are a great way to share intermediate and advanced level knowledge
-about a programming language.
+Если использовать шаблоны проектирования слишком часто, они могут добавить ненужную сложность в программы. Однако они отличный способ обмена знаниями на промежуточном и продвинутом уровнях о языке программирования.
 
-## Design patterns in Rust
+## Шаблоны проектирования в Rust
 
-Rust has many unique features. These features give us great benefit by removing
-whole classes of problems. Some of them are also patterns that are _unique_ to Rust.
+Rust имеет множество уникальных функций. Эти функции дают нам большую пользу, удаляя целые классы проблем. Некоторые из них также являются шаблонами, которые _уникальны_ для Rust.
 
 ## YAGNI
 
-YAGNI is an acronym that stands for `You Aren't Going to Need It`.
-It's a vital software design principle to apply as you write code.
+YAGNI - это аббревиатура, которая означает `You Aren't Going to Need It` (вам это не понадобится). Это важный принцип проектирования программного обеспечения, который следует применять при написании кода.
 
-> The best code I ever wrote was code I never wrote.
+> Лучший код, который я когда-либо написал, - это код, который я никогда не писал.
 
-If we apply YAGNI to design patterns, we see that the features of Rust allow us to
-throw out many patterns. For instance, there is no need for the [strategy pattern](https://en.wikipedia.org/wiki/Strategy_pattern)
-in Rust because we can just use [traits](https://doc.rust-lang.org/book/traits.html).
+Если мы применим YAGNI к шаблонам проектирования, мы увидим, что функции Rust позволяют нам отбросить многие шаблоны. Например, в Rust нет необходимости в [шаблоне стратегии](https://en.wikipedia.org/wiki/Strategy_pattern), потому что мы можем просто использовать [traits](https://doc.rust-lang.org/book/traits.html).

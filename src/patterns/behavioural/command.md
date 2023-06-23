@@ -1,32 +1,20 @@
-# Command
+# Команда
 
-## Description
+## Описание
 
-The basic idea of the Command pattern is to separate out actions into its own
-objects and pass them as parameters.
+Основная идея паттерна Команда заключается в том, чтобы выделить действия в отдельные объекты и передавать их в качестве параметров.
 
-## Motivation
+## Мотивация
 
-Suppose we have a sequence of actions or transactions encapsulated as objects.
-We want these actions or commands to be executed or invoked in some order later
-at different time. These commands may also be triggered as a result of some event.
-For example, when a user pushes a button, or on arrival of a data packet.
-In addition, these commands might be undoable. This may come in useful for
-operations of an editor. We might want to store logs of executed commands so that
-we could reapply the changes later if the system crashes.
+Предположим, у нас есть последовательность действий или транзакций, инкапсулированных в объекты. Мы хотим, чтобы эти действия или команды были выполнены или вызваны в определенном порядке позже в разное время. Эти команды также могут быть вызваны в результате какого-то события. Например, когда пользователь нажимает кнопку или при получении пакета данных. Кроме того, эти команды могут быть отменены. Это может пригодиться для операций редактора. Мы можем хотеть сохранить журналы выполненных команд, чтобы мы могли повторно применить изменения позже, если система выйдет из строя.
 
-## Example
+## Пример
 
-Define two database operations `create table` and `add field`. Each of these
-operations is a command which knows how to undo the command, e.g., `drop table`
-and `remove field`. When a user invokes a database migration operation then each
-command is executed in the defined order, and when the user invokes the rollback
-operation then the whole set of commands is invoked in reverse order.
+Определим две операции базы данных `create table` и `add field`. Каждая из этих операций является командой, которая знает, как отменить команду, например, `drop table` и `remove field`. Когда пользователь вызывает операцию миграции базы данных, каждая команда выполняется в определенном порядке, и когда пользователь вызывает операцию отката, весь набор команд вызывается в обратном порядке.
 
-## Approach: Using trait objects
+## Подход: Использование объектов трейтов
 
-We define a common trait which encapsulates our command with two operations
-`execute` and `rollback`. All command `structs` must implement this trait.
+Мы определяем общий трейт, который инкапсулирует нашу команду с двумя операциями `execute` и `rollback`. Все структуры команд должны реализовывать этот трейт.
 
 ```rust
 pub trait Migration {
@@ -92,13 +80,9 @@ fn main() {
 }
 ```
 
-## Approach: Using function pointers
+## Подход: Использование указателей на функции
 
-We could follow another approach by creating each individual command as
-a different function and store function pointers to invoke these functions later
-at a different time. Since function pointers implement all three traits `Fn`,
-`FnMut`, and `FnOnce` we could as well pass and store closures instead of
-function pointers.
+Мы могли бы следовать другому подходу, создавая каждую отдельную команду как отдельную функцию и храня указатели на функции для вызова этих функций позже в другое время. Поскольку указатели на функции реализуют все три трейта `Fn`, `FnMut` и `FnOnce`, мы также можем передавать и хранить замыкания вместо указателей на функции.
 
 ```rust
 type FnPtr = fn() -> String;
@@ -147,10 +131,9 @@ fn main() {
 }
 ```
 
-## Approach: Using `Fn` trait objects
+## Подход: Использование объектов трейта `Fn`
 
-Finally, instead of defining a common command trait we could store
-each command implementing the `Fn` trait separately in vectors.
+Наконец, вместо определения общего трейта команд мы можем хранить каждую команду, реализующую трейт `Fn`, отдельно в векторах.
 
 ```rust
 type Migration<'a> = Box<dyn Fn() -> &'a str>;
@@ -200,23 +183,14 @@ fn main() {
 }
 ```
 
-## Discussion
+## Обсуждение
 
-If our commands are small and may be defined as functions or passed as a closure
-then using function pointers might be preferable since it does not exploit
-dynamic dispatch. But if our command is a whole struct with a bunch of functions
-and variables defined as seperated module then using trait objects would be
-more suitable. A case of application can be found in [`actix`](https://actix.rs/),
-which uses trait objects when it registers a handler function for routes.
-In case of using `Fn` trait objects we can create and use commands in the same
-way as we used in case of function pointers.
+Если наши команды небольшие и могут быть определены как функции или переданы в виде замыкания, то использование указателей на функции может быть предпочтительнее, поскольку это не использует динамическую диспетчеризацию. Но если наша команда - это целая структура с набором функций и переменных, определенных как отдельный модуль, то использование объектов трейтов будет более подходящим. Пример применения можно найти в [`actix`](https://actix.rs/), который использует объекты трейтов при регистрации функции обработчика для маршрутов. В случае использования объектов трейта `Fn` мы можем создавать и использовать команды так же, как мы использовали указатели на функции.
 
-As performance, there is always a trade-off between performance and code
-simplicity and organisation. Static dispatch gives faster performance, while
-dynamic dispatch provides flexibility when we structure our application.
+Что касается производительности, всегда есть компромисс между производительностью и простотой и организацией кода. Статическая диспетчеризация обеспечивает более быструю производительность, а динамическая диспетчеризация обеспечивает гибкость при структурировании нашего приложения.
 
-## See also
+## Смотрите также
 
-- [Command pattern](https://en.wikipedia.org/wiki/Command_pattern)
+- [Паттерн Команда](https://en.wikipedia.org/wiki/Command_pattern)
 
-- [Another example for the `command` pattern](https://web.archive.org/web/20210223131236/https://chercher.tech/rust/command-design-pattern-rust)
+- [Еще один пример для паттерна `command`](https://web.archive.org/web/20210223131236/https://chercher.tech/rust/command-design-pattern-rust)

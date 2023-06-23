@@ -1,11 +1,11 @@
-# Translations
+# Переводы
 
-We are utilizing [mdbook-i18n-helper](https://github.com/google/mdbook-i18n-helpers).
-Please read up on how to _add_ and _update_ translations in [their repository](https://github.com/google/mdbook-i18n-helpers#creating-and-updating-translations)
+Мы используем [mdbook-i18n-helper](https://github.com/google/mdbook-i18n-helpers).
+Пожалуйста, ознакомьтесь с тем, как _добавлять_ и _обновлять_ переводы в [их репозитории](https://github.com/google/mdbook-i18n-helpers#creating-and-updating-translations)
 
-## External translations
+## Внешние переводы
 
 - [简体中文](https://fomalhauthmj.github.io/patterns/)
 
-If you want to add a translation, please open an issue in the
-[main repository](https://github.com/rust-unofficial/patterns).
+Если вы хотите добавить перевод, пожалуйста, откройте issue в
+[основном репозитории](https://github.com/rust-unofficial/patterns).

@@ -1,14 +1,12 @@
-# `Deref` polymorphism
+# `Deref` полиморфизм
 
-## Description
+## Описание
 
-Misuse the `Deref` trait to emulate inheritance between structs, and thus reuse
-methods.
+Использование трейта `Deref` для эмуляции наследования между структурами и, таким образом, повторного использования методов.
 
-## Example
+## Пример
 
-Sometimes we want to emulate the following common pattern from OO languages such
-as Java:
+Иногда мы хотим эмулировать следующий общий шаблон из ОО-языков, таких как Java:
 
 ```java
 class Foo {
@@ -23,7 +21,7 @@ public static void main(String[] args) {
 }
 ```
 
-We can use the deref polymorphism anti-pattern to do so:
+Мы можем использовать анти-паттерн полиморфизма deref для этого:
 
 ```rust
 use std::ops::Deref;
@@ -53,22 +51,13 @@ fn main() {
 }
 ```
 
-There is no struct inheritance in Rust. Instead we use composition and include
-an instance of `Foo` in `Bar` (since the field is a value, it is stored inline,
-so if there were fields, they would have the same layout in memory as the Java
-version (probably, you should use `#[repr(C)]` if you want to be sure)).
+В Rust нет наследования структур. Вместо этого мы используем композицию и включаем экземпляр `Foo` в `Bar` (поскольку поле является значением, оно хранится встроенным, поэтому, если бы были поля, они бы имели ту же компоновку в памяти, что и версия Java (вероятно, вы должны использовать `#[repr(C)]`, если хотите быть уверены)).
 
-In order to make the method call work we implement `Deref` for `Bar` with `Foo`
-as the target (returning the embedded `Foo` field). That means that when we
-dereference a `Bar` (for example, using `*`) then we will get a `Foo`. That is
-pretty weird. Dereferencing usually gives a `T` from a reference to `T`, here we
-have two unrelated types. However, since the dot operator does implicit
-dereferencing, it means that the method call will search for methods on `Foo` as
-well as `Bar`.
+Чтобы вызов метода работал, мы реализуем `Deref` для `Bar` с `Foo` в качестве цели (возвращая встроенное поле `Foo`). Это означает, что когда мы разыменовываем `Bar` (например, используя `*`), мы получим `Foo`. Это довольно странно. Разыменование обычно дает `T` из ссылки на `T`, здесь у нас два несвязанных типа. Однако, поскольку оператор точки выполняет неявное разыменование, это означает, что вызов метода будет искать методы на `Foo`, а также на `Bar`.
 
-## Advantages
+## Преимущества
 
-You save a little boilerplate, e.g.,
+Вы экономите немного шаблона, например,
 
 ```rust,ignore
 impl Bar {
@@ -78,51 +67,27 @@ impl Bar {
 }
 ```
 
-## Disadvantages
+## Недостатки
 
-Most importantly this is a surprising idiom - future programmers reading this in
-code will not expect this to happen. That's because we are misusing the `Deref`
-trait rather than using it as intended (and documented, etc.). It's also because
-the mechanism here is completely implicit.
+Прежде всего, это удивительный идиоматический оборот - будущие программисты, читающие это в коде, не будут ожидать, что это произойдет. Это потому, что мы злоупотребляем трейтом `Deref`, а не используем его, как предполагалось (и документировалось и т. д.). Это также связано с тем, что механизм здесь полностью неявный.
 
-This pattern does not introduce subtyping between `Foo` and `Bar` like
-inheritance in Java or C++ does. Furthermore, traits implemented by `Foo` are
-not automatically implemented for `Bar`, so this pattern interacts badly with
-bounds checking and thus generic programming.
+Этот шаблон не вводит подтипизацию между `Foo` и `Bar`, как наследование в Java или C++, не автоматически реализованные для `Bar`, поэтому этот шаблон плохо взаимодействует с проверкой границ и, следовательно, с обобщенным программированием.
 
-Using this pattern gives subtly different semantics from most OO languages with
-regards to `self`. Usually it remains a reference to the sub-class, with this
-pattern it will be the 'class' where the method is defined.
+Использование этого шаблона дает существенно отличающуюся семантику от большинства ОО-языков в отношении `self`. Обычно он остается ссылкой на подкласс, с этим шаблоном он будет «классом», где определен метод.
 
-Finally, this pattern only supports single inheritance, and has no notion of
-interfaces, class-based privacy, or other inheritance-related features. So, it
-gives an experience that will be subtly surprising to programmers used to Java
-inheritance, etc.
+Наконец, этот шаблон поддерживает только одиночное наследование и не имеет понятия интерфейсов, наследуемой конфиденциальности на основе классов или других функций, связанных с наследованием. Таким образом, он дает опыт, который будет существенно отличаться для программистов, привыкших к наследованию Java и т. д.
 
-## Discussion
+## Обсуждение
 
-There is no one good alternative. Depending on the exact circumstances it might
-be better to re-implement using traits or to write out the facade methods to
-dispatch to `Foo` manually. We do intend to add a mechanism for inheritance
-similar to this to Rust, but it is likely to be some time before it reaches
-stable Rust. See these [blog](http://aturon.github.io/blog/2015/09/18/reuse/)
-[posts](http://smallcultfollowing.com/babysteps/blog/2015/10/08/virtual-structs-part-4-extended-enums-and-thin-traits/)
-and this [RFC issue](https://github.com/rust-lang/rfcs/issues/349) for more details.
+Нет одного хорошего альтернативного варианта. В зависимости от конкретных обстоятельств может быть лучше переопределить с использованием трейтов или написать методы фасада для ручной диспетчеризации в `Foo`. Мы намерены добавить механизм наследования, аналогичный этому, в Rust, но, вероятно, это займет некоторое время, прежде чем он достигнет стабильной версии Rust. См. эти [блог](http://aturon.github.io/blog/2015/09/18/reuse/) [посты](http://smallcultfollowing.com/babysteps/blog/2015/10/08/virtual-structs-part-4-extended-enums-and-thin-traits/) и этот [RFC issue](https://github.com/rust-lang/rfcs/issues/349) для получения дополнительной информации.
 
-The `Deref` trait is designed for the implementation of custom pointer types.
-The intention is that it will take a pointer-to-`T` to a `T`, not convert
-between different types. It is a shame that this isn't (probably cannot be)
-enforced by the trait definition.
+Трейт `Deref` предназначен для реализации пользовательских типов указателей. Намерение заключается в том, что он будет принимать указатель на `T` к `T`, а не преобразовывать между различными типами. Жаль, что это не (вероятно, не может быть) обеспечено определением трейта.
 
-Rust tries to strike a careful balance between explicit and implicit mechanisms,
-favouring explicit conversions between types. Automatic dereferencing in the dot
-operator is a case where the ergonomics strongly favour an implicit mechanism,
-but the intention is that this is limited to degrees of indirection, not
-conversion between arbitrary types.
+Rust пытается найти баланс между явными и неявными механизмами, отдавая предпочтение явным преобразованиям между типами. Автоматическое разыменование в операторе точки - это случай, когда эргономика сильно выигрывает за счет неявного механизма, но намерение заключается в том, что это ограничено степенями косвенности, а не преобразованием между произвольными типами.
 
-## See also
+## Смотрите также
 
-- [Collections are smart pointers idiom](../idioms/deref.md).
-- Delegation crates for less boilerplate like [delegate](https://crates.io/crates/delegate)
-  or [ambassador](https://crates.io/crates/ambassador)
-- [Documentation for `Deref` trait](https://doc.rust-lang.org/std/ops/trait.Deref.html).
+- [Коллекции - идиоматические умные указатели](../idioms/deref.md).
+- Крейты делегирования для уменьшения шаблона, такие как [delegate](https://crates.io/crates/delegate)
+  или [ambassador](https://crates.io/crates/ambassador)
+- [Документация для трейта `Deref`](https://doc.rust-lang.org/std/ops/trait.Deref.html).

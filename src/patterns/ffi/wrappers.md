@@ -1,40 +1,40 @@
-# Type Consolidation into Wrappers
+# Консолидация типов в обертки
 
-## Description
+## Описание
 
-This pattern is designed to allow gracefully handling multiple related types,
-while minimizing the surface area for memory unsafety.
+Этот шаблон предназначен для элегантной обработки нескольких связанных типов,
+с минимизацией поверхности для небезопасности памяти.
 
-One of the cornerstones of Rust's aliasing rules is lifetimes.
-This ensures that many patterns of access between types can be memory safe,
-data race safety included.
+Одним из угловых камней правил псевдонимов Rust являются времена жизни.
+Это гарантирует, что многие шаблоны доступа между типами могут быть безопасными для памяти,
+включая безопасность гонок данных.
 
-However, when Rust types are exported to other languages, they are usually transformed
-into pointers. In Rust, a pointer means "the user manages the lifetime of the pointee."
-It is their responsibility to avoid memory unsafety.
+Однако, когда типы Rust экспортируются на другие языки, они обычно преобразуются
+в указатели. В Rust указатель означает "пользователь управляет временем жизни указателя".
+Это их ответственность избегать небезопасности памяти.
 
-Some level of trust in the user code is thus required, notably around use-after-free
-which Rust can do nothing about. However, some API designs place higher burdens
-than others on the code written in the other language.
+Таким образом, требуется некоторый уровень доверия в коде пользователя, особенно вокруг использования после освобождения,
+что Rust не может ничего сделать. Однако некоторые конструкции API накладывают более высокие бремена
+чем другие на написанный на другом языке код.
 
-The lowest risk API is the "consolidated wrapper", where all possible interactions
-with an object are folded into a "wrapper type", while keeping the Rust API clean.
+API с наименьшим риском - это "консолидированная обертка", где все возможные взаимодействия
+с объектом сворачиваются в "обертку типа", при этом сохраняя чистый Rust API.
 
-## Code Example
+## Пример кода
 
-To understand this, let us look at a classic example of an API to export: iteration
-through a collection.
+Чтобы понять это, давайте рассмотрим классический пример экспортируемого API: итерацию
+через коллекцию.
 
-That API looks like this:
+Этот API выглядит так:
 
-1. The iterator is initialized with `first_key`.
-2. Each call to `next_key` will advance the iterator.
-3. Calls to `next_key` if the iterator is at the end will do nothing.
-4. As noted above, the iterator is "wrapped into" the collection (unlike the native
+1. Итератор инициализируется с помощью `first_key`.
+2. Каждый вызов `next_key` продвигает итератор.
+3. Вызовы `next_key`, если итератор находится в конце, ничего не делают.
+4. Как указано выше, итератор "обернут" в коллекцию (в отличие от родного
    Rust API).
 
-If the iterator implements `nth()` efficiently, then it is possible to make it
-ephemeral to each function call:
+Если итератор эффективно реализует `nth()`, то возможно сделать его
+эфемерным для каждого вызова функции:
 
 ```rust,ignore
 struct MySetWrapper {
@@ -58,35 +58,34 @@ impl MySetWrapper {
 }
 ```
 
-As a result, the wrapper is simple and contains no `unsafe` code.
+В результате обертка проста и не содержит кода `unsafe`.
 
-## Advantages
+## Преимущества
 
-This makes APIs safer to use, avoiding issues with lifetimes between types.
-See [Object-Based APIs](./export.md) for more on the advantages and pitfalls
-this avoids.
+Это делает API более безопасным в использовании, избегая проблем с временами жизни между типами.
+См. [API на основе объектов](./export.md) для получения дополнительной информации о преимуществах и недостатках,
+избегаемых этим.
 
-## Disadvantages
+## Недостатки
 
-Often, wrapping types is quite difficult, and sometimes a Rust API compromise
-would make things easier.
+Часто упаковка типов довольно сложна, и иногда компромисс Rust API сделал бы вещи проще.
 
-As an example, consider an iterator which does not efficiently implement `nth()`.
-It would definitely be worth putting in special logic to make the object handle
-iteration internally, or to support a different access pattern efficiently that
-only the Foreign Function API will use.
+В качестве примера рассмотрим итератор, который не эффективно реализует `nth()`.
+Определенно стоило бы внести специальную логику, чтобы объект обрабатывал
+итерацию внутри себя, или поддерживал другой эффективный способ доступа,
+который будет использовать только API иностранной функции.
 
-### Trying to Wrap Iterators (and Failing)
+### Попытка упаковать итераторы (и неудача)
 
-To wrap any type of iterator into the API correctly, the wrapper would need to
-do what a C version of the code would do: erase the lifetime of the iterator,
-and manage it manually.
+Чтобы правильно упаковать любой тип итератора в API, обертка должна была бы
+делать то, что версия на C языке кода бы делала: стирать время жизни итератора,
+и управлять им вручную.
 
-Suffice it to say, this is _incredibly_ difficult.
+Достаточно сказать, что это _невероятно_ сложно.
 
-Here is an illustration of just _one_ pitfall.
+Вот иллюстрация только _одной_ проблемы.
 
-A first version of `MySetWrapper` would look like this:
+Первая версия `MySetWrapper` будет выглядеть так:
 
 ```rust,ignore
 struct MySetWrapper {
@@ -97,16 +96,15 @@ struct MySetWrapper {
 }
 ```
 
-With `transmute` being used to extend a lifetime, and a pointer to hide it,
-it's ugly already. But it gets even worse: _any other operation can cause
-Rust `undefined behaviour`_.
+С использованием `transmute` для расширения времени жизни и указателя для его скрытия,
+это уже уродливо. Но дело становится еще хуже: _любая другая операция может вызвать
+неопределенное поведение Rust_.
 
-Consider that the `MySet` in the wrapper could be manipulated by other
-functions during iteration, such as storing a new value to the key it was
-iterating over. The API doesn't discourage this, and in fact some similar C
-libraries expect it.
+Предположим, что `MySet` в обертке может быть изменен другими
+функциями во время итерации, например, сохранение нового значения в ключ, по которому она
+итерировалась. API не препятствует этому, и на самом деле некоторые аналогичные библиотеки на C языке ожидают этого.
 
-A simple implementation of `myset_store` would be:
+Простая реализация `myset_store` будет такой:
 
 ```rust,ignore
 pub mod unsafe_module {
@@ -134,29 +132,27 @@ pub mod unsafe_module {
 }
 ```
 
-If the iterator exists when this function is called, we have violated one of Rust's
-aliasing rules. According to Rust, the mutable reference in this block must have
-_exclusive_ access to the object. If the iterator simply exists, it's not exclusive,
-so we have `undefined behaviour`! [^1]
+Если итератор существует, когда вызывается эта функция, мы нарушаем одно из правил псевдонимов Rust.
+Согласно Rust, изменяемая ссылка в этом блоке должна иметь _исключительный_ доступ к объекту. Если итератор просто существует, это не исключительный доступ,
+поэтому у нас есть `неопределенное поведение`! [^1]
 
-To avoid this, we must have a way of ensuring that mutable reference really is exclusive.
-That basically means clearing out the iterator's shared reference while it exists,
-and then reconstructing it. In most cases, that will still be less efficient than
-the C version.
+Чтобы избежать этого, мы должны иметь способ гарантировать, что изменяемая ссылка действительно является исключительной.
+Это в основном означает очистку общей ссылки итератора, пока она существует,
+а затем ее восстановление. В большинстве случаев это все еще будет менее эффективно, чем
+версия на C языке кода.
 
-Some may ask: how can C do this more efficiently?
-The answer is, it cheats. Rust's aliasing rules are the problem, and C simply ignores
-them for its pointers. In exchange, it is common to see code that is declared
-in the manual as "not thread safe" under some or all circumstances. In fact,
-the [GNU C library](https://manpages.debian.org/buster/manpages/attributes.7.en.html)
-has an entire lexicon dedicated to concurrent behavior!
+Некоторые могут спросить: как C может это сделать более эффективно?
+Ответ - он обманывает. Правила псевдонимов Rust - это проблема, и C просто игнорирует
+их для своих указателей. Взамен, часто можно увидеть код, который объявлен
+вручную как "не потокобезопасный" в некоторых или всех обстоятельствах. На самом деле,
+[GNU C библиотека](https://manpages.debian.org/buster/manpages/attributes.7.en.html)
+имеет целый лексикон, посвященный параллельному поведению!
 
-Rust would rather make everything memory safe all the time, for both safety and
-optimizations that C code cannot attain. Being denied access to certain shortcuts
-is the price Rust programmers need to pay.
+Rust предпочитает делать все безопасным для памяти все время, как для безопасности, так и для
+оптимизаций, которые код на C не может достичь. Отказ от доступа к некоторым ярлыкам -
+это цена, которую должны заплатить программисты Rust.
 
-[^1]: For the C programmers out there scratching their heads, the iterator need
-not be read _during_ this code cause the UB. The exclusivity rule also enables
-compiler optimizations which may cause inconsistent observations by the iterator's
-shared reference (e.g. stack spills or reordering instructions for efficiency).
-These observations may happen _any time after_ the mutable reference is created.
+[^1]: Для программистов на C, которые скребут голову, итератор не должен
+читаться _во время_ этого кода, вызывая UB. Правило исключительности также позволяет
+оптимизациям компилятора, которые могут вызвать несогласованные наблюдения общей ссылки итератора (например, переполнение стека или перестановка инструкций для повышения эффективности).
+Эти наблюдения могут происходить _в любое время после_ создания изменяемой ссылки.

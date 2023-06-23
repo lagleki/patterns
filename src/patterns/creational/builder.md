@@ -1,10 +1,10 @@
-# Builder
+# Строитель
 
-## Description
+## Описание
 
-Construct an object with calls to a builder helper.
+Создание объекта с помощью вызовов помощника-строителя.
 
-## Example
+## Пример
 
 ```rust
 #[derive(Debug, PartialEq)]
@@ -60,41 +60,36 @@ fn builder_test() {
 }
 ```
 
-## Motivation
+## Мотивация
 
-Useful when you would otherwise require many constructors or where
-construction has side effects.
+Полезно, когда вам в противном случае потребуется много конструкторов или когда
+создание имеет побочные эффекты.
 
-## Advantages
+## Преимущества
 
-Separates methods for building from other methods.
+Разделяет методы для создания от других методов.
 
-Prevents proliferation of constructors.
+Предотвращает разрастание конструкторов.
 
-Can be used for one-liner initialisation as well as more complex construction.
+Может использоваться для инициализации в одну строку, а также для более сложного создания.
 
-## Disadvantages
+## Недостатки
 
-More complex than creating a struct object directly, or a simple constructor
-function.
+Более сложный, чем создание объекта структуры напрямую или простой конструктор
+функции.
 
-## Discussion
+## Обсуждение
 
-This pattern is seen more frequently in Rust (and for simpler objects) than in
-many other languages because Rust lacks overloading. Since you can only have a
-single method with a given name, having multiple constructors is less nice in
-Rust than in C++, Java, or others.
+Этот шаблон чаще встречается в Rust (и для более простых объектов), чем в
+многих других языках, потому что Rust не имеет перегрузки. Поскольку вы можете иметь только один метод с данным именем, наличие нескольких конструкторов менее удобно в Rust, чем в C++, Java или других языках.
 
-This pattern is often used where the builder object is useful in its own right,
-rather than being just a builder. For example, see
+Этот шаблон часто используется там, где объект-строитель полезен сам по себе,
+а не просто строитель. Например, см.
 [`std::process::Command`](https://doc.rust-lang.org/std/process/struct.Command.html)
-is a builder for [`Child`](https://doc.rust-lang.org/std/process/struct.Child.html)
-(a process). In these cases, the `T` and `TBuilder` naming pattern is not used.
+является строителем для [`Child`](https://doc.rust-lang.org/std/process/struct.Child.html)
+(процесса). В этих случаях шаблон именования `T` и `TBuilder` не используется.
 
-The example takes and returns the builder by value. It is often more ergonomic
-(and more efficient) to take and return the builder as a mutable reference. The
-borrow checker makes this work naturally. This approach has the advantage that
-one can write code like
+В примере строитель принимает и возвращает значение по значению. Часто более эргономично (и эффективно) принимать и возвращать строитель как изменяемую ссылку. Проверка заимствования делает это естественным образом. Этот подход имеет преимущество в том, что можно писать код, как
 
 ```rust,ignore
 let mut fb = FooBuilder::new();
@@ -103,13 +98,13 @@ fb.b();
 let f = fb.build();
 ```
 
-as well as the `FooBuilder::new().a().b().build()` style.
+а также в стиле `FooBuilder::new().a().b().build()`.
 
-## See also
+## Смотрите также
 
-- [Description in the style guide](https://web.archive.org/web/20210104103100/https://doc.rust-lang.org/1.12.0/style/ownership/builders.html)
-- [derive_builder](https://crates.io/crates/derive_builder), a crate for automatically
-  implementing this pattern while avoiding the boilerplate.
-- [Constructor pattern](../../idioms/ctor.md) for when construction is simpler.
-- [Builder pattern (wikipedia)](https://en.wikipedia.org/wiki/Builder_pattern)
-- [Construction of complex values](https://web.archive.org/web/20210104103000/https://rust-lang.github.io/api-guidelines/type-safety.html#c-builder)
+- [Описание в руководстве по стилю](https://web.archive.org/web/20210104103100/https://doc.rust-lang.org/1.12.0/style/ownership/builders.html)
+- [derive_builder](https://crates.io/crates/derive_builder), крейт для автоматической
+  реализации этого шаблона с избежанием шаблона.
+- [Шаблон конструктора](../../idioms/ctor.md) для случаев, когда создание проще.
+- [Шаблон строителя (wikipedia)](https://en.wikipedia.org/wiki/Builder_pattern)
+- [Создание сложных значений](https://web.archive.org/web/20210104103000/https://rust-lang.github.io/api-guidelines/type-safety.html#c-builder)

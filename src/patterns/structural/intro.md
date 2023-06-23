@@ -1,6 +1,5 @@
-# Structural Patterns
+# Структурные паттерны
 
-From [Wikipedia](https://en.wikipedia.org/wiki/Structural_pattern):
+Из [Википедии](https://en.wikipedia.org/wiki/Structural_pattern):
 
-> Design patterns that ease the design by identifying a simple way to realize relationships
-> among entities.
+> Паттерны проектирования, которые упрощают проектирование, идентифицируя простой способ реализации отношений между сущностями.

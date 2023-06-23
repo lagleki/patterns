@@ -1,22 +1,20 @@
-# Error Handling in FFI
+# Обработка ошибок в FFI
 
-## Description
+## Описание
 
-In foreign languages like C, errors are represented by return codes.
-However, Rust's type system allows much more rich error information to be
-captured and propogated through a full type.
+В иностранных языках, таких как C, ошибки представлены кодами возврата.
+Однако, система типов Rust позволяет получать гораздо более полную информацию об ошибках,
+которая может быть передана через полный тип.
 
-This best practice shows different kinds of error codes, and how to expose them
-in a usable way:
+Этот лучший подход показывает различные виды кодов ошибок и как их можно использовать:
 
-1. Flat Enums should be converted to integers and returned as codes.
-2. Structured Enums should be converted to an integer code with a string error
-   message for detail.
-3. Custom Error Types should become "transparent", with a C representation.
+1. Плоские перечисления должны быть преобразованы в целые числа и возвращены в виде кодов.
+2. Структурированные перечисления должны быть преобразованы в целочисленный код с сообщением об ошибке в виде строки для деталей.
+3. Пользовательские типы ошибок должны стать "прозрачными", с представлением на языке C.
 
-## Code Example
+## Пример кода
 
-### Flat Enums
+### Плоские перечисления
 
 ```rust,ignore
 enum DatabaseError {
@@ -32,7 +30,7 @@ impl From<DatabaseError> for libc::c_int {
 }
 ```
 
-### Structured Enums
+### Структурированные перечисления
 
 ```rust,ignore
 pub mod errors {
@@ -101,7 +99,7 @@ pub mod c_api {
 }
 ```
 
-### Custom Error Types
+### Пользовательские типы ошибок
 
 ```rust,ignore
 struct ParseError {
@@ -128,12 +126,11 @@ impl From<ParseError> for parse_error {
 }
 ```
 
-## Advantages
+## Преимущества
 
-This ensures that the foreign language has clear access to error information
-while not compromising the Rust code's API at all.
+Это гарантирует, что иностранный язык имеет четкий доступ к информации об ошибках,
+не нарушая API кода Rust.
 
-## Disadvantages
+## Недостатки
 
-It's a lot of typing, and some types may not be able to be converted easily
-to C.
+Это много набора, и некоторые типы могут быть трудными для преобразования на язык C.

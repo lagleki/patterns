@@ -1,14 +1,12 @@
-# `mem::{take(_), replace(_)}` to keep owned values in changed enums
+# `mem::{take(_), replace(_)}` для сохранения владеемых значений в измененных перечислениях
 
-## Description
+## Описание
 
-Say we have a `&mut MyEnum` which has (at least) two variants,
-`A { name: String, x: u8 }` and `B { name: String }`. Now we want to change
-`MyEnum::A` to a `B` if `x` is zero, while keeping `MyEnum::B` intact.
+Предположим, у нас есть `&mut MyEnum`, который имеет (как минимум) два варианта: `A { name: String, x: u8 }` и `B { name: String }`. Теперь мы хотим изменить `MyEnum::A` на `B`, если `x` равен нулю, сохраняя при этом `MyEnum::B`.
 
-We can do this without cloning the `name`.
+Мы можем сделать это без клонирования `name`.
 
-## Example
+## Пример
 
 ```rust
 use std::mem;
@@ -29,7 +27,7 @@ fn a_to_b(e: &mut MyEnum) {
 }
 ```
 
-This also works with more variants:
+Это также работает с большим количеством вариантов:
 
 ```rust
 use std::mem;
@@ -54,58 +52,34 @@ fn swizzle(e: &mut MultiVariateEnum) {
 }
 ```
 
-## Motivation
+## Мотивация
 
-When working with enums, we may want to change an enum value in place, perhaps
-to another variant. This is usually done in two phases to keep the borrow
-checker happy. In the first phase, we observe the existing value and look at
-its parts to decide what to do next. In the second phase we may conditionally
-change the value (as in the example above).
+При работе с перечислениями мы можем захотеть изменить значение перечисления на месте, возможно, на другой вариант. Обычно это делается в два этапа, чтобы удовлетворить проверку заимствования. На первом этапе мы наблюдаем существующее значение и смотрим на его части, чтобы решить, что делать дальше. На втором этапе мы можем условно изменить значение (как в примере выше).
 
-The borrow checker won't allow us to take out `name` of the enum (because
-_something_ must be there.) We could of course `.clone()` name and put the clone
-into our `MyEnum::B`, but that would be an instance of the [Clone to satisfy the borrow checker](../anti_patterns/borrow_clone.md) anti-pattern. Anyway, we
-can avoid the extra allocation by changing `e` with only a mutable borrow.
+Проверка заимствования не позволит нам взять `name` из перечисления (потому что _что-то_ должно быть там). Мы могли бы, конечно, `.clone()` name и поместить клон в наш `MyEnum::B`, но это было бы примером анти-паттерна [Clone to satisfy the borrow checker](../anti_patterns/borrow_clone.md). В любом случае, мы можем избежать дополнительного выделения памяти, изменив `e` только с изменяемым заимствованием.
 
-`mem::take` lets us swap out the value, replacing it with it's default value,
-and returning the previous value. For `String`, the default value is an empty
-`String`, which does not need to allocate. As a result, we get the original
-`name` _as an owned value_. We can then wrap this in another enum.
+`mem::take` позволяет нам заменить значение, заменив его значением по умолчанию и возвращая предыдущее значение. Для `String` значение по умолчанию - это пустая `String`, которая не требует выделения памяти. В результате мы получаем исходное `name` _как владеемое значение_. Затем мы можем обернуть это в другое перечисление.
 
-**NOTE:** `mem::replace` is very similar, but allows us to specify what to
-replace the value with. An equivalent to our `mem::take` line would be
-`mem::replace(name, String::new())`.
+**ЗАМЕЧАНИЕ:** `mem::replace` очень похож, но позволяет нам указать, чем заменить значение. Эквивалентом нашей строки `mem::take` будет `mem::replace(name, String::new())`.
 
-Note, however, that if we are using an `Option` and want to replace its
-value with a `None`, `Option`’s `take()` method provides a shorter and
-more idiomatic alternative.
+Однако следует отметить, что если мы используем `Option` и хотим заменить его значение на `None`, метод `take()` `Option` предоставляет более короткую и идиоматическую альтернативу.
 
-## Advantages
+## Преимущества
 
-Look ma, no allocation! Also you may feel like Indiana Jones while doing it.
+Смотрите, мама, без выделения памяти! Кроме того, вы можете почувствовать себя Индианой Джонсом, делая это.
 
-## Disadvantages
+## Недостатки
 
-This gets a bit wordy. Getting it wrong repeatedly will make you hate the
-borrow checker. The compiler may fail to optimize away the double store,
-resulting in reduced performance as opposed to what you'd do in unsafe
-languages.
+Это становится немного громоздким. Если вы несколько раз ошибетесь, вы начнете ненавидеть проверку заимствования. Компилятор может не суметь оптимизировать двойное хранение, что приведет к снижению производительности по сравнению с тем, что вы делали в небезопасных языках.
 
-Furthermore, the type you are taking needs to implement the [`Default` trait](./default.md). However, if the type you're working with doesn't
-implement this, you can instead use `mem::replace`.
+Кроме того, тип, который вы берете, должен реализовывать [`Default` trait](./default.md). Однако, если тип, с которым вы работаете, не реализует это, вы можете использовать `mem::replace`.
 
-## Discussion
+## Обсуждение
 
-This pattern is only of interest in Rust. In GC'd languages, you'd take the
-reference to the value by default (and the GC would keep track of refs), and in
-other low-level languages like C you'd simply alias the pointer and fix things
-later.
+Этот шаблон интересен только в Rust. В языках с автоматическим управлением памятью вы по умолчанию берете ссылку на значение (и GC будет отслеживать ссылки), а в других низкоуровневых языках, таких как C, вы просто создаете псевдоним указателя и исправляете вещи позже.
 
-However, in Rust, we have to do a little more work to do this. An owned value
-may only have one owner, so to take it out, we need to put something back in –
-like Indiana Jones, replacing the artifact with a bag of sand.
+Однако в Rust нам нужно сделать немного больше работы. Владеемое значение может иметь только одного владельца, поэтому, чтобы его извлечь, мы должны что-то вернуть - как Индиана Джонс, заменяя артефакт мешком с песком.
 
-## See also
+## Смотрите также
 
-This gets rid of the [Clone to satisfy the borrow checker](../anti_patterns/borrow_clone.md)
-anti-pattern in a specific case.
+Это избавляет от анти-паттерна [Clone to satisfy the borrow checker](../anti_patterns/borrow_clone.md) в конкретном случае.

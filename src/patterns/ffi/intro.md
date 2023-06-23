@@ -1,13 +1,13 @@
-# FFI Patterns
+# Шаблоны FFI
 
-Writing FFI code is an entire course in itself.
-However, there are several idioms here that can act as pointers, and avoid traps
-for inexperienced users of unsafe Rust.
+Написание кода FFI - это целый курс сам по себе.
+Однако здесь есть несколько идиом, которые могут служить указателями и избежать ловушек
+для неопытных пользователей небезопасного Rust.
 
-This section contains design patterns that may be useful when doing FFI.
+Этот раздел содержит шаблоны проектирования, которые могут быть полезны при работе с FFI.
 
-1. [Object-Based API](./export.md) design that has good memory safety characteristics,
-   and a clean boundary of what is safe and what is unsafe
+1. [API на основе объектов](./export.md) имеет хорошие характеристики безопасности памяти,
+   и чистую границу того, что является безопасным, а что - нет.
 
-2. [Type Consolidation into Wrappers](./wrappers.md) - group multiple Rust types
-   together into an opaque "object"
+2. [Консолидация типов в обертки](./wrappers.md) - группировка нескольких типов Rust
+   вместе в непрозрачный "объект".

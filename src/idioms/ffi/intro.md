@@ -1,14 +1,11 @@
-# FFI Idioms
+# FFI Идиомы
 
-Writing FFI code is an entire course in itself.
-However, there are several idioms here that can act as pointers, and avoid
-traps for inexperienced users of `unsafe` Rust.
+Написание кода FFI - это целый курс сам по себе. Однако здесь есть несколько идиом, которые могут служить указателями и избежать ловушек для неопытных пользователей `unsafe` Rust.
 
-This section contains idioms that may be useful when doing FFI.
+Этот раздел содержит идиомы, которые могут быть полезны при работе с FFI.
 
-1. [Idiomatic Errors](./errors.md) - Error handling with integer codes and
-   sentinel return values (such as `NULL` pointers)
+1. [Идиоматические ошибки](./errors.md) - Обработка ошибок с помощью целочисленных кодов и возвращаемых значений-маркеров (например, указателей `NULL`)
 
-2. [Accepting Strings](./accepting-strings.md) with minimal unsafe code
+2. [Прием строк](./accepting-strings.md) с минимальным использованием `unsafe` кода
 
-3. [Passing Strings](./passing-strings.md) to FFI functions
+3. [Передача строк](./passing-strings.md) в функции FFI

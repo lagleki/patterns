@@ -1,12 +1,10 @@
-# Collections are smart pointers
+# Коллекции - это умные указатели
 
-## Description
+## Описание
 
-Use the [`Deref`](https://doc.rust-lang.org/std/ops/trait.Deref.html)
-trait to treat collections like smart pointers, offering owning
-and borrowed views of data.
+Используйте трейт [`Deref`](https://doc.rust-lang.org/std/ops/trait.Deref.html), чтобы обрабатывать коллекции как умные указатели, предоставляя владеющие и заимствованные представления данных.
 
-## Example
+## Пример
 
 ```rust,ignore
 use std::ops::Deref;
@@ -25,55 +23,33 @@ impl<T> Deref for Vec<T> {
 }
 ```
 
-A `Vec<T>` is an owning collection of `T`s, while a slice (`&[T]`) is a borrowed
-collection of `T`s. Implementing `Deref` for `Vec` allows implicit dereferencing
-from `&Vec<T>` to `&[T]` and includes the relationship in auto-derefencing
-searches. Most methods you might expect to be implemented for `Vec`s are instead
-implemented for slices.
+`Vec<T>` - это владеющая коллекция `T`, а срез (`&[T]`) - заимствованная коллекция `T`. Реализация `Deref` для `Vec` позволяет неявное разыменование от `&Vec<T>` до `&[T]` и включает отношение в автоматические поиски разыменования. Большинство методов, которые вы могли бы ожидать реализованными для `Vec`, вместо этого реализованы для срезов.
 
-Also `String` and `&str` have a similar relation.
+Также `String` и `&str` имеют аналогичное отношение.
 
-## Motivation
+## Мотивация
 
-Ownership and borrowing are key aspects of the Rust language. Data structures
-must account for these semantics properly to give a good user
-experience. When implementing a data structure that owns its data, offering a
-borrowed view of that data allows for more flexible APIs.
+Владение и заимствование - это ключевые аспекты языка Rust. Структуры данных должны правильно учитывать эти семантики, чтобы обеспечить хороший пользовательский опыт. При реализации структуры данных, которая владеет своими данными, предоставление заимствованного представления этих данных позволяет более гибким API.
 
-## Advantages
+## Преимущества
 
-Most methods can be implemented only for the borrowed view, they are then
-implicitly available for the owning view.
+Большинство методов могут быть реализованы только для заимствованного представления, они затем неявно доступны для владеющего представления.
 
-Gives clients a choice between borrowing or taking ownership of data.
+Дает клиентам выбор между заимствованием или владением данных.
 
-## Disadvantages
+## Недостатки
 
-Methods and traits only available via dereferencing are not taken into account
-when bounds checking, so generic programming with data structures using this
-pattern can get complex (see the `Borrow` and `AsRef` traits, etc.).
+Методы и трейты, доступные только через разыменование, не учитываются при проверке границ, поэтому обобщенное программирование со структурами данных, использующими этот шаблон, может стать сложным (см. трейты `Borrow` и `AsRef` и т. д.).
 
-## Discussion
+## Обсуждение
 
-Smart pointers and collections are analogous: a smart pointer points to a single
-object, whereas a collection points to many objects. From the point of view of
-the type system, there is little difference between the two. A collection owns
-its data if the only way to access each datum is via the collection and the
-collection is responsible for deleting the data (even in cases of shared
-ownership, some kind of borrowed view may be appropriate). If a collection owns
-its data, it is usually useful to provide a view of the data as borrowed so that
-it can be referenced multiple times.
+Умные указатели и коллекции аналогичны: умный указатель указывает на один объект, тогда как коллекция указывает на множество объектов. С точки зрения системы типов, между ними мало различий. Коллекция владеет своими данными, если единственный способ доступа к каждому элементу - через коллекцию, и коллекция отвечает за удаление данных (даже в случае общего владения, некоторое заимствованное представление может быть уместным). Если коллекция владеет своими данными, обычно полезно предоставить представление данных как заимствованное, чтобы на него можно было ссылаться несколько раз.
 
-Most smart pointers (e.g., `Foo<T>`) implement `Deref<Target=T>`. However,
-collections will usually dereference to a custom type. `[T]` and `str` have some
-language support, but in the general case, this is not necessary. `Foo<T>` can
-implement `Deref<Target=Bar<T>>` where `Bar` is a dynamically sized type and
-`&Bar<T>` is a borrowed view of the data in `Foo<T>`.
+Большинство умных указателей (например, `Foo<T>`) реализуют `Deref<Target=T>`. Однако коллекции обычно разыменовываются до пользовательского типа. `[T]` и `str` имеют некоторую поддержку языка, но в общем случае это не обязательно. `Foo<T>` может реализовать `Deref<Target=Bar<T>>`, где `Bar` - это тип с динамическим размером, а `&Bar<T>` - заимствованное представление данных в `Foo<T>`.
 
-Commonly, ordered collections will implement `Index` for `Range`s to provide
-slicing syntax. The target will be the borrowed view.
+Обычно упорядоченные коллекции будут реализовывать `Index` для `Range`, чтобы предоставлять синтаксис среза. Целью будет заимствованное представление.
 
-## See also
+## Смотрите также
 
-- [Deref polymorphism anti-pattern](../anti_patterns/deref.md).
-- [Documentation for `Deref` trait](https://doc.rust-lang.org/std/ops/trait.Deref.html).
+- [Антипаттерн полиморфизма разыменования](../anti_patterns/deref.md).
+- [Документация для трейта `Deref`](https://doc.rust-lang.org/std/ops/trait.Deref.html).

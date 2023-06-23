@@ -1,36 +1,32 @@
-# Interpreter
+# Интерпретатор
 
-## Description
+## Описание
 
-If a problem occurs very often and requires long and repetitive steps to solve
-it, then the problem instances might be expressed in a simple language and an
-interpreter object could solve it by interpreting the sentences written in this
-simple language.
+Если проблема возникает очень часто и требует долгих и повторяющихся шагов для ее решения, то экземпляры проблем могут быть выражены на простом языке, и объект-интерпретатор может решить ее, интерпретируя предложения, написанные на этом простом языке.
 
-Basically, for any kind of problems we define:
+В основном, для любых видов проблем мы определяем:
 
-- A [domain specific language](https://en.wikipedia.org/wiki/Domain-specific_language),
-- A grammar for this language,
-- An interpreter that solves the problem instances.
+- [Язык, специфичный для предметной области](https://en.wikipedia.org/wiki/Domain-specific_language),
+- Грамматика для этого языка,
+- Интерпретатор, который решает экземпляры проблем.
 
-## Motivation
+## Мотивация
 
-Our goal is to translate simple mathematical expressions into postfix expressions
-(or [Reverse Polish notation](https://en.wikipedia.org/wiki/Reverse_Polish_notation))
-For simplicity, our expressions consist of ten digits `0`, ..., `9` and two
-operations `+`, `-`. For example, the expression `2 + 4` is translated into
+Наша цель - перевести простые математические выражения в постфиксные выражения
+(или [обратную польскую запись](https://en.wikipedia.org/wiki/Reverse_Polish_notation))
+Для простоты наши выражения состоят из десяти цифр `0`, ..., `9` и двух
+операций `+`, `-`. Например, выражение `2 + 4` переводится в
 `2 4 +`.
 
-## Context Free Grammar for our problem
+## Контекстно-свободная грамматика для нашей проблемы
 
-Our task is translating infix expressions into postfix ones. Let's define a context
-free grammar for a set of infix expressions over `0`, ..., `9`, `+`, and `-`,
-where:
+Наша задача - перевод инфиксных выражений в постфиксные. Давайте определим контекстно-свободную грамматику для набора инфиксных выражений над `0`, ..., `9`, `+` и `-`,
+где:
 
-- Terminal symbols: `0`, `...`, `9`, `+`, `-`
-- Non-terminal symbols: `exp`, `term`
-- Start symbol is `exp`
-- And the following are production rules
+- Терминальные символы: `0`, `...`, `9`, `+`, `-`
+- Нетерминальные символы: `exp`, `term`
+- Стартовый символ - `exp`
+- И следующие правила производства
 
 ```ignore
 exp -> exp + term
@@ -39,16 +35,14 @@ exp -> term
 term -> 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 ```
 
-**NOTE:** This grammar should be further transformed depending on what we are going
-to do with it. For example, we might need to remove left recursion. For more
-details please see [Compilers: Principles,Techniques, and Tools](https://en.wikipedia.org/wiki/Compilers:_Principles,_Techniques,_and_Tools)
-(aka Dragon Book).
+**ПРИМЕЧАНИЕ:** Эта грамматика должна быть дополнительно преобразована в зависимости от того, что мы собираемся сделать с ней. Например, мы можем потребовать удаления левой рекурсии. Для получения более подробной информации см. [Компиляторы: принципы, техники и инструменты](https://en.wikipedia.org/wiki/Compilers:_Principles,_Techniques,_and_Tools)
+(также известная как книга Dragon).
 
-## Solution
+## Решение
 
-We simply implement a recursive descent parser. For simplicity's sake, the code
-panics when an expression is syntactically wrong (for example `2-34` or `2+5-`
-are wrong according to the grammar definition).
+Мы просто реализуем рекурсивный спуск парсера. Для упрощения код
+выдает ошибку при синтаксической неправильности выражения (например, `2-34` или `2+5-`
+неправильны согласно определению грамматики).
 
 ```rust
 pub struct Interpreter<'a> {
@@ -100,20 +94,18 @@ pub fn main() {
 }
 ```
 
-## Discussion
+## Обсуждение
 
-There may be a wrong perception that the Interpreter design pattern is about design
-grammars for formal languages and implementation of parsers for these grammars.
-In fact, this pattern is about expressing problem instances in a more specific
-way and implementing functions/classes/structs that solve these problem instances.
-Rust language has `macro_rules!` that allow us to define special syntax and rules
-on how to expand this syntax into source code.
+Может быть неверное восприятие того, что паттерн проектирования Интерпретатор связан с проектированием грамматик для формальных языков и реализацией парсеров для этих грамматик.
+На самом деле этот паттерн связан с выражением экземпляров проблемы более конкретным
+способом и реализацией функций/классов/структур, которые решают эти экземпляры проблемы.
+Язык Rust имеет `macro_rules!`, которые позволяют нам определять специальный синтаксис и правила
+для расширения этого синтаксиса в исходный код.
 
-In the following example we create a simple `macro_rules!` that computes
-[Euclidean length](https://en.wikipedia.org/wiki/Euclidean_distance) of `n`
-dimensional vectors. Writing `norm!(x,1,2)` might be easier to express and more
-efficient than packing `x,1,2` into a `Vec` and calling a function computing
-the length.
+В следующем примере мы создаем простой `macro_rules!`, который вычисляет
+[Евклидову длину](https://en.wikipedia.org/wiki/Euclidean_distance) `n`
+мерных векторов. Запись `norm!(x,1,2)` может быть проще выразить и более
+эффективно, чем упаковка `x,1,2` в `Vec` и вызов функции, вычисляющей длину.
 
 ```rust
 macro_rules! norm {
@@ -139,8 +131,8 @@ fn main() {
 }
 ```
 
-## See also
+## Смотрите также
 
-- [Interpreter pattern](https://en.wikipedia.org/wiki/Interpreter_pattern)
-- [Context free grammar](https://en.wikipedia.org/wiki/Context-free_grammar)
+- [Паттерн Интерпретатор](https://en.wikipedia.org/wiki/Interpreter_pattern)
+- [Контекстно-свободная грамматика](https://en.wikipedia.org/wiki/Context-free_grammar)
 - [macro_rules!](https://doc.rust-lang.org/rust-by-example/macros.html)

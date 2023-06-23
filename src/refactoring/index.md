@@ -1,22 +1,18 @@
-# Refactoring
+# Рефакторинг
 
-Refactoring is very important in relation to these topics.
-Just as important as the other topics covered here, is how to take good code and
-turn it into great code.
+Рефакторинг очень важен в отношении этих тем.
+Так же важно, как и другие темы, рассмотренные здесь, это то, как превратить хороший код в отличный.
 
-We can use [design patterns](../patterns/index.md) to [DRY] up code and generalize
-abstractions. We must avoid [anti-patterns](../anti_patterns/index.md) while we
-do this. While they may be tempting to employ, their costs outweigh their benefits.
+Мы можем использовать [шаблоны проектирования](../patterns/index.md), чтобы сделать код более [DRY] и обобщить абстракции. Мы должны избегать [анти-шаблонов](../anti_patterns/index.md) во время этого. Хотя их использование может быть заманчивым, их затраты превышают их преимущества.
 
-> Shortcuts make for long days.
+> Ярлыки делают день длиннее.
 
-We can also use [idioms](../idioms/index.md) to structure our code in a way that
-is understandable.
+Мы также можем использовать [идиомы](../idioms/index.md), чтобы структурировать наш код таким образом, чтобы он был понятен.
 
-## Tests
+## Тесты
 
-Tests are of vital importance during refactoring.
+Тесты имеют жизненно важное значение во время рефакторинга.
 
-## Small changes
+## Маленькие изменения
 
-[DRY]: https://en.wikipedia.org/wiki/Don%27t_repeat_yourself
+[DRY]: https://ru.wikipedia.org/wiki/Don%27t_repeat_yourself

@@ -1,19 +1,16 @@
-# Temporary mutability
+# Временная изменяемость
 
-## Description
+## Описание
 
-Often it is necessary to prepare and process some data, but after that data are
-only inspected and never modified. The intention can be made explicit by redefining
-the mutable variable as immutable.
+Часто необходимо подготовить и обработать некоторые данные, но после этого данные только проверяются и никогда не изменяются. Намерение может быть сделано явным путем переопределения изменяемой переменной как неизменяемой.
 
-It can be done either by processing data within a nested block or by redefining
-the variable.
+Это можно сделать либо путем обработки данных во вложенном блоке, либо путем переопределения переменной.
 
-## Example
+## Пример
 
-Say, vector must be sorted before usage.
+Предположим, что вектор должен быть отсортирован перед использованием.
 
-Using nested block:
+Используя вложенный блок:
 
 ```rust,ignore
 let data = {
@@ -25,7 +22,7 @@ let data = {
 // Here `data` is immutable.
 ```
 
-Using variable rebinding:
+Используя переопределение переменной:
 
 ```rust,ignore
 let mut data = get_vec();
@@ -35,11 +32,11 @@ let data = data;
 // Here `data` is immutable.
 ```
 
-## Advantages
+## Преимущества
 
-Compiler ensures that you don't accidentally mutate data after some point.
+Компилятор гарантирует, что вы не случайно измените данные после некоторого момента.
 
-## Disadvantages
+## Недостатки
 
-Nested block requires additional indentation of block body.
-One more line to return data from block or redefine variable.
+Вложенный блок требует дополнительного отступа тела блока.
+Еще одна строка для возврата данных из блока или переопределения переменной.

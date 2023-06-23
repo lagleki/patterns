@@ -1,15 +1,12 @@
 # Fold
 
-## Description
+## Описание
 
-Run an algorithm over each item in a collection of data to create a new item,
-thus creating a whole new collection.
+Запустите алгоритм над каждым элементом в коллекции данных, чтобы создать новый элемент, тем самым создавая целую новую коллекцию.
 
-The etymology here is unclear to me. The terms 'fold' and 'folder' are used
-in the Rust compiler, although it appears to me to be more like a map than a
-fold in the usual sense. See the discussion below for more details.
+Этимология здесь мне не ясна. Термины «fold» и «folder» используются в компиляторе Rust, хотя мне кажется, что это больше похоже на карту, чем на свертку в обычном смысле. См. Обсуждение ниже для получения более подробной информации.
 
-## Example
+## Пример
 
 ```rust,ignore
 // The data we will fold, a simple AST.
@@ -62,61 +59,32 @@ impl Folder for Renamer {
 }
 ```
 
-The result of running the `Renamer` on an AST is a new AST identical to the old
-one, but with every name changed to `foo`. A real life folder might have some
-state preserved between nodes in the struct itself.
+Результат выполнения `Renamer` на AST - это новый AST, идентичный старому, но с каждым именем, измененным на `foo`. В реальной жизни папка может сохранять некоторое состояние между узлами в самой структуре.
 
-A folder can also be defined to map one data structure to a different (but
-usually similar) data structure. For example, we could fold an AST into a HIR
-tree (HIR stands for high-level intermediate representation).
+Также можно определить папку для отображения одной структуры данных на другую (но обычно похожую) структуру данных. Например, мы могли бы свернуть AST в дерево HIR (HIR означает промежуточное представление высокого уровня).
 
-## Motivation
+## Мотивация
 
-It is common to want to map a data structure by performing some operation on
-each node in the structure. For simple operations on simple data structures,
-this can be done using `Iterator::map`. For more complex operations, perhaps
-where earlier nodes can affect the operation on later nodes, or where iteration
-over the data structure is non-trivial, using the fold pattern is more
-appropriate.
+Часто хочется отобразить структуру данных, выполнив некоторую операцию над каждым узлом в структуре. Для простых операций над простыми структурами данных это можно сделать с помощью `Iterator::map`. Для более сложных операций, возможно, где более ранние узлы могут влиять на операцию на более поздних узлах, или где итерация по структуре данных не тривиальна, использование шаблона свертки более подходит.
 
-Like the visitor pattern, the fold pattern allows us to separate traversal of a
-data structure from the operations performed to each node.
+Как и шаблон посетителя, шаблон свертки позволяет нам отделить обход структуры данных от операций, выполняемых для каждого узла.
 
-## Discussion
+## Обсуждение
 
-Mapping data structures in this fashion is common in functional languages. In OO
-languages, it would be more common to mutate the data structure in place. The
-'functional' approach is common in Rust, mostly due to the preference for
-immutability. Using fresh data structures, rather than mutating old ones, makes
-reasoning about the code easier in most circumstances.
+Отображение структур данных таким образом распространено в функциональных языках. В объектно-ориентированных языках было бы более распространено изменение структуры данных на месте. «Функциональный» подход распространен в Rust, в основном из-за предпочтения неизменяемости. Использование новых структур данных, а не изменение старых, облегчает рассуждение о коде в большинстве случаев.
 
-The trade-off between efficiency and reusability can be tweaked by changing how
-nodes are accepted by the `fold_*` methods.
+Компромисс между эффективностью и повторным использованием можно настроить, изменив способ принятия узлов методами `fold_*`.
 
-In the above example we operate on `Box` pointers. Since these own their data
-exclusively, the original copy of the data structure cannot be re-used. On the
-other hand if a node is not changed, reusing it is very efficient.
+В приведенном выше примере мы работаем с указателями `Box`. Поскольку они владеют своими данными исключительно, исходная копия структуры данных не может быть повторно использована. С другой стороны, если узел не изменен, его повторное использование очень эффективно.
 
-If we were to operate on borrowed references, the original data structure can be
-reused; however, a node must be cloned even if unchanged, which can be
-expensive.
+Если бы мы работали с ссылками на заимствование, исходная структура данных могла бы быть повторно использована; однако узел должен быть клонирован даже в случае, если он не изменен, что может быть дорогостоящим.
 
-Using a reference counted pointer gives the best of both worlds - we can reuse
-the original data structure, and we don't need to clone unchanged nodes. However,
-they are less ergonomic to use and mean that the data structures cannot be
-mutable.
+Использование указателя с подсчетом ссылок дает лучшее из обоих миров - мы можем повторно использовать исходную структуру данных, и нам не нужно клонировать неизмененные узлы. Однако они менее эргономичны в использовании и означают, что структуры данных не могут быть изменяемыми.
 
-## See also
+## См. также
 
-Iterators have a `fold` method, however this folds a data structure into a
-value, rather than into a new data structure. An iterator's `map` is more like
-this fold pattern.
+У итераторов есть метод `fold`, однако это сворачивает структуру данных в значение, а не в новую структуру данных. `map` итератора больше похож на этот шаблон свертки.
 
-In other languages, fold is usually used in the sense of Rust's iterators,
-rather than this pattern. Some functional languages have powerful constructs for
-performing flexible maps over data structures.
+В других языках свертка обычно используется в смысле итераторов Rust, а не этого шаблона. Некоторые функциональные языки имеют мощные конструкции для выполнения гибких отображений над структурами данных.
 
-The [visitor](../behavioural/visitor.md) pattern is closely related to fold.
-They share the concept of walking a data structure performing an operation on
-each node. However, the visitor does not create a new data structure nor consume
-the old one.
+Шаблон [посетитель](../behavioural/visitor.md) тесно связан со сверткой. Они делят концепцию обхода структуры данных, выполняя операцию на каждом узле. Однако посетитель не создает новую структуру данных и не потребляет старую.```

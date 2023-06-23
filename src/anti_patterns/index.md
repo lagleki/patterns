@@ -1,8 +1,3 @@
-# Anti-patterns
+# Анти-паттерны
 
-An [anti-pattern](https://en.wikipedia.org/wiki/Anti-pattern) is a solution to
-a "recurring problem that is usually ineffective and risks being highly
-counterproductive". Just as valuable as knowing how to solve a problem, is
-knowing how _not_ to solve it. Anti-patterns give us great counter-examples to
-consider relative to design patterns. Anti-patterns are not confined to code.
-For example, a process can be an anti-pattern, too.
+[Анти-паттерн](https://ru.wikipedia.org/wiki/%D0%90%D0%BD%D1%82%D0%B8-%D0%BF%D0%B0%D1%82%D1%82%D0%B5%D1%80%D0%BD) - это решение "повторяющейся проблемы, которое обычно неэффективно и рискует быть крайне контрпродуктивным". Так же, как и знание того, как решить проблему, важно знать, как _не_ решать ее. Анти-паттерны дают нам отличные контр-примеры для рассмотрения в отношении паттернов проектирования. Анти-паттерны не ограничиваются кодом. Например, процесс также может быть анти-паттерном.

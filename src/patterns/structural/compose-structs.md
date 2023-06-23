@@ -1,21 +1,14 @@
-# Struct decomposition for independent borrowing
+# Декомпозиция структур для независимого заимствования
 
-## Description
+## Описание
 
-Sometimes a large struct will cause issues with the borrow checker - although
-fields can be borrowed independently, sometimes the whole struct ends up being
-used at once, preventing other uses. A solution might be to decompose the struct
-into several smaller structs. Then compose these together into the original
-struct. Then each struct can be borrowed separately and have more flexible
-behaviour.
+Иногда большая структура может вызвать проблемы с проверкой заимствования - хотя поля могут быть заимствованы независимо, иногда целая структура используется сразу, что препятствует другим использованиям. Решением может быть декомпозиция структуры на несколько меньших структур. Затем объедините их в исходную структуру. Тогда каждую структуру можно заимствовать отдельно и она будет иметь более гибкое поведение.
 
-This will often lead to a better design in other ways: applying this design
-pattern often reveals smaller units of functionality.
+Это часто приводит к лучшему дизайну в других аспектах: применение этого шаблона дизайна часто позволяет выявлять более мелкие единицы функциональности.
 
-## Example
+## Пример
 
-Here is a contrived example of where the borrow checker foils us in our plan to
-use a struct:
+Вот выдуманный пример, где проверка заимствования мешает нам в нашем плане использования структуры:
 
 ```rust
 struct Database {
@@ -44,8 +37,7 @@ fn main() {
 }
 ```
 
-We can apply this design pattern and refactor `Database` into three smaller
-structs, thus solving the borrow checking issue:
+Мы можем применить этот шаблон дизайна и перестроить `Database` на три меньшие структуры, тем самым решив проблему проверки заимствования:
 
 ```rust
 // Database is now composed of three structs - ConnectionString, Timeout and PoolSize.
@@ -89,31 +81,20 @@ fn main() {
 }
 ```
 
-## Motivation
+## Мотивация
 
-This pattern is most useful, when you have a struct that ended up with a lot of
-fields that you want to borrow independently. Thus having a more flexible
-behaviour in the end.
+Этот шаблон наиболее полезен, когда у вас есть структура, которая закончилась с большим количеством полей, которые вы хотите заимствовать независимо. Таким образом, в конечном итоге получается более гибкое поведение.
 
-## Advantages
+## Преимущества
 
-Decomposition of structs lets you work around limitations in the borrow checker.
-And it often produces a better design.
+Декомпозиция структур позволяет обойти ограничения проверки заимствования. И это часто приводит к лучшему дизайну.
 
-## Disadvantages
+## Недостатки
 
-It can lead to more verbose code. And sometimes, the smaller structs are not
-good abstractions, and so we end up with a worse design. That is probably a
-'code smell', indicating that the program should be refactored in some way.
+Это может привести к более многословному коду. И иногда меньшие структуры не являются хорошими абстракциями, и мы получаем худший дизайн. Это, вероятно, "запах кода", указывающий на то, что программу нужно перестроить каким-то образом.
 
-## Discussion
+## Обсуждение
 
-This pattern is not required in languages that don't have a borrow checker, so
-in that sense is unique to Rust. However, making smaller units of functionality
-often leads to cleaner code: a widely acknowledged principle of software
-engineering, independent of the language.
+Этот шаблон не требуется в языках, которые не имеют проверки заимствования, поэтому в этом смысле он уникален для Rust. Однако создание более мелких единиц функциональности часто приводит к более чистому коду: широко признанный принцип программной инженерии, независимо от языка.
 
-This pattern relies on Rust's borrow checker to be able to borrow fields
-independently of each other. In the example, the borrow checker knows that `a.b`
-and `a.c` are distinct and can be borrowed independently, it does not try to
-borrow all of `a`, which would make this pattern useless.
+Этот шаблон основан на проверке заимствования Rust, чтобы иметь возможность заимствовать поля независимо друг от друга. В примере проверка заимствования знает, что `a.b` и `a.c` различны и могут быть заимствованы независимо, она не пытается заимствовать все `a`, что сделало бы этот шаблон бесполезным.

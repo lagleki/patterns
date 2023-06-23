@@ -1,17 +1,17 @@
-# Pass variables to closure
+# Передача переменных в замыкание
 
-## Description
+## Описание
 
-By default, closures capture their environment by borrowing. Or you can use
-`move`-closure to move whole environment. However, often you want to move just
-some variables to closure, give it copy of some data, pass it by reference, or
-perform some other transformation.
+По умолчанию замыкания заимствуют свою среду. Или вы можете использовать
+`move`-замыкание, чтобы переместить всю среду. Однако часто вы хотите переместить только
+некоторые переменные в замыкание, передать ему копию некоторых данных, передать по ссылке или
+выполнить какое-то другое преобразование.
 
-Use variable rebinding in separate scope for that.
+Для этого используйте перепривязку переменных в отдельной области видимости.
 
-## Example
+## Пример
 
-Use
+Используйте
 
 ```rust
 use std::rc::Rc;
@@ -29,7 +29,7 @@ let closure = {
 };
 ```
 
-instead of
+вместо
 
 ```rust
 use std::rc::Rc;
@@ -45,15 +45,14 @@ let closure = move || {
 };
 ```
 
-## Advantages
+## Преимущества
 
-Copied data are grouped together with closure definition, so their purpose is
-more clear, and they will be dropped immediately even if they are not consumed
-by closure.
+Скопированные данные группируются вместе с определением замыкания, поэтому их назначение более ясно,
+и они будут немедленно удалены, даже если они не будут использованы замыканием.
 
-Closure uses same variable names as surrounding code whether data are copied or
-moved.
+Замыкание использует те же имена переменных, что и окружающий код, независимо от того, скопированы ли данные или
+перемещены.
 
-## Disadvantages
+## Недостатки
 
-Additional indentation of closure body.
+Дополнительный отступ тела замыкания.

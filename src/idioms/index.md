@@ -1,18 +1,9 @@
-# Idioms
+# Идиомы
 
-[Idioms](https://en.wikipedia.org/wiki/Programming_idiom) are commonly used
-styles, guidelines and patterns largely agreed upon by a community.
-Writing idiomatic code allows other developers to understand better what is
-happening.
+[Идиомы](https://en.wikipedia.org/wiki/Programming_idiom) - это общепринятые стили, рекомендации и шаблоны, на которые согласилось сообщество. Написание идиоматического кода позволяет другим разработчикам лучше понимать, что происходит.
 
-After all, the computer only cares about the machine code that is generated
-by the compiler.
-Instead, the source code is mainly beneficial to the developer.
-So, since we have this abstraction layer, why not make it more readable?
+В конце концов, компьютеру важен только машинный код, который генерирует компилятор. Вместо этого исходный код в основном полезен разработчику. Итак, поскольку у нас есть этот уровень абстракции, почему бы не сделать его более читаемым?
 
-Remember the [KISS principle](https://en.wikipedia.org/wiki/KISS_principle):
-"Keep It Simple, Stupid". It claims that "most systems work best if they are
-kept simple rather than made complicated; therefore, simplicity should be a key
-goal in design, and unnecessary complexity should be avoided".
+Помните принцип [KISS](https://en.wikipedia.org/wiki/KISS_principle): "Keep It Simple, Stupid". Он утверждает, что "большинство систем работают лучше, если они просты, а не сложны; поэтому простота должна быть ключевой целью в проектировании, и ненужная сложность должна быть избегана".
 
-> Code is there for humans, not computers, to understand.
+> Код предназначен для понимания людьми, а не компьютерами.

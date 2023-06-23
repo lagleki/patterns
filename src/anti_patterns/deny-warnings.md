@@ -1,11 +1,10 @@
 # `#![deny(warnings)]`
 
-## Description
+## Описание
 
-A well-intentioned crate author wants to ensure their code builds without
-warnings. So they annotate their crate root with the following:
+Автор крейта с хорошими намерениями хочет убедиться, что его код собирается без предупреждений. Поэтому он аннотирует корневой крейт следующим образом:
 
-## Example
+## Пример
 
 ```rust
 #![deny(warnings)]
@@ -13,48 +12,33 @@ warnings. So they annotate their crate root with the following:
 // All is well.
 ```
 
-## Advantages
+## Преимущества
 
-It is short and will stop the build if anything is amiss.
+Это коротко и остановит сборку, если что-то не так.
 
-## Drawbacks
+## Недостатки
 
-By disallowing the compiler to build with warnings, a crate author opts out of
-Rust's famed stability. Sometimes new features or old misfeatures need a change
-in how things are done, thus lints are written that `warn` for a certain grace
-period before being turned to `deny`.
+Запретив компилятору собирать с предупреждениями, автор крейта отказывается от знаменитой стабильности Rust. Иногда новые функции или старые ошибки требуют изменения способа выполнения задач, поэтому создаются линты, которые предупреждают о необходимости изменений в течение определенного периода времени, прежде чем они станут запрещенными.
 
-For example, it was discovered that a type could have two `impl`s with the same
-method. This was deemed a bad idea, but in order to make the transition smooth,
-the `overlapping-inherent-impls` lint was introduced to give a warning to those
-stumbling on this fact, before it becomes a hard error in a future release.
+Например, было обнаружено, что тип может иметь два `impl` с одним и тем же методом. Это было признано плохой идеей, но для того, чтобы сделать переход плавным, был введен линт `overlapping-inherent-impls`, который предупреждает тех, кто сталкивается с этим фактом, прежде чем это станет жесткой ошибкой в будущем релизе.
 
-Also sometimes APIs get deprecated, so their use will emit a warning where
-before there was none.
+Также иногда API устаревают, поэтому их использование будет выдавать предупреждение, где раньше его не было.
 
-All this conspires to potentially break the build whenever something changes.
+Все это может привести к потенциальному нарушению сборки при любом изменении.
 
-Furthermore, crates that supply additional lints (e.g. [rust-clippy]) can no
-longer be used unless the annotation is removed. This is mitigated with
-[--cap-lints]. The `--cap-lints=warn` command line argument, turns all `deny`
-lint errors into warnings.
+Кроме того, крейты, которые предоставляют дополнительные линты (например, [rust-clippy]), больше не могут использоваться, если аннотация не удалена. Это уменьшается с помощью [--cap-lints]. Аргумент командной строки `--cap-lints=warn` превращает все ошибки линтов `deny` в предупреждения.
 
-## Alternatives
+## Альтернативы
 
-There are two ways of tackling this problem: First, we can decouple the build
-setting from the code, and second, we can name the lints we want to deny
-explicitly.
+Есть два способа решения этой проблемы: во-первых, мы можем отделить настройку сборки от кода, а во-вторых, мы можем явно указать линты, которые мы хотим запретить.
 
-The following command line will build with all warnings set to `deny`:
+Следующая команда сборки установит все предупреждения на `deny`:
 
 `RUSTFLAGS="-D warnings" cargo build`
 
-This can be done by any individual developer (or be set in a CI tool like
-Travis, but remember that this may break the build when something changes)
-without requiring a change to the code.
+Это может сделать любой отдельный разработчик (или быть установлено в инструменте CI, но помните, что это может нарушить сборку при любом изменении) без необходимости изменения кода.
 
-Alternatively, we can specify the lints that we want to `deny` in the code.
-Here is a list of warning lints that is (hopefully) safe to deny (as of Rustc 1.48.0):
+В качестве альтернативы мы можем указать линты, которые мы хотим запретить в коде. Вот список линтов предупреждений, которые (надеюсь) безопасно запрещать (на момент Rustc 1.48.0):
 
 ```rust,ignore
 #![deny(bad_style,
@@ -75,7 +59,7 @@ Here is a list of warning lints that is (hopefully) safe to deny (as of Rustc 1.
        while_true)]
 ```
 
-In addition, the following `allow`ed lints may be a good idea to `deny`:
+Кроме того, следующие линты `allow` могут быть хорошей идеей для запрета:
 
 ```rust,ignore
 #![deny(missing_debug_implementations,
@@ -88,19 +72,17 @@ In addition, the following `allow`ed lints may be a good idea to `deny`:
        unused_results)]
 ```
 
-Some may also want to add `missing-copy-implementations` to their list.
+Некоторые могут также захотеть добавить `missing-copy-implementations` в свой список.
 
-Note that we explicitly did not add the `deprecated` lint, as it is fairly
-certain that there will be more deprecated APIs in the future.
+Обратите внимание, что мы явно не добавили линт `deprecated`, так как довольно вероятно, что в будущем будут появляться более устаревшие API.
 
-## See also
+## Смотрите также
 
-- [A collection of all clippy lints](https://rust-lang.github.io/rust-clippy/master)
-- [deprecate attribute] documentation
-- Type `rustc -W help` for a list of lints on your system. Also type
-  `rustc --help` for a general list of options
-- [rust-clippy] is a collection of lints for better Rust code
+- [Коллекция всех линтов clippy](https://rust-lang.github.io/rust-clippy/master)
+- [атрибут устаревания] документация
+- Введите `rustc -W help`, чтобы получить список линтов на вашей системе. Также введите `rustc --help`, чтобы получить общий список опций
+- [rust-clippy] - это коллекция линтов для лучшего кода Rust
 
 [rust-clippy]: https://github.com/Manishearth/rust-clippy
-[deprecate attribute]: https://doc.rust-lang.org/reference/attributes.html#deprecation
+[атрибут устаревания]: https://doc.rust-lang.org/reference/attributes.html#deprecation
 [--cap-lints]: https://doc.rust-lang.org/rustc/lints/levels.html#capping-lints

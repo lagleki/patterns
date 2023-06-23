@@ -1,11 +1,8 @@
-# Programming paradigms
+# Парадигмы программирования
 
-One of the biggest hurdles to understanding functional programs when coming
-from an imperative background is the shift in thinking. Imperative programs
-describe **how** to do something, whereas declarative programs describe
-**what** to do. Let's sum the numbers from 1 to 10 to show this.
+Одно из самых больших препятствий для понимания функциональных программ при переходе от императивного подхода - это изменение мышления. Императивные программы описывают **как** что-то сделать, тогда как декларативные программы описывают **что** сделать. Давайте сложим числа от 1 до 10, чтобы показать это.
 
-## Imperative
+## Императивный подход
 
 ```rust
 let mut sum = 0;
@@ -15,11 +12,7 @@ for i in 1..11 {
 println!("{}", sum);
 ```
 
-With imperative programs, we have to play compiler to see what is happening.
-Here, we start with a `sum` of `0`.
-Next, we iterate through the range from 1 to 10.
-Each time through the loop, we add the corresponding value in the range.
-Then we print it out.
+С императивными программами нам приходится играть в компилятор, чтобы понять, что происходит. Здесь мы начинаем с `sum` равным `0`. Затем мы проходим через диапазон от 1 до 10. Каждый раз в цикле мы добавляем соответствующее значение в диапазоне. Затем мы выводим это.
 
 | `i` | `sum` |
 | :-: | :---: |
@@ -34,26 +27,18 @@ Then we print it out.
 |  9  |  45   |
 | 10  |  55   |
 
-This is how most of us start out programming. We learn that a program is a set
-of steps.
+Так мы начинаем программировать. Мы учимся, что программа - это набор шагов.
 
-## Declarative
+## Декларативный подход
 
 ```rust
 println!("{}", (1..11).fold(0, |a, b| a + b));
 ```
 
-Whoa! This is really different! What's going on here?
-Remember that with declarative programs we are describing **what** to do,
-rather than **how** to do it. `fold` is a function that [composes](https://en.wikipedia.org/wiki/Function_composition)
-functions. The name is a convention from Haskell.
+Вау! Это действительно по-другому! Что здесь происходит?
+Помните, что с декларативными программами мы описываем **что** делать, а не **как** это делать. `fold` - это функция, которая [компонует](https://en.wikipedia.org/wiki/Function_composition) функции. Название является соглашением из Haskell.
 
-Here, we are composing functions of addition (this closure: `|a, b| a + b`)
-with a range from 1 to 10. The `0` is the starting point, so `a` is `0` at
-first. `b` is the first element of the range, `1`. `0 + 1 = 1` is the result.
-So now we `fold` again, with `a = 1`, `b = 2` and so `1 + 2 = 3` is the next
-result. This process continues until we get to the last element in the range,
-`10`.
+Здесь мы компонуем функции сложения (это замыкание: `|a, b| a + b`) с диапазоном от 1 до 10. `0` - это начальная точка, поэтому `a` вначале равно `0`. `b` - это первый элемент диапазона, `1`. `0 + 1 = 1` - это результат. Так что теперь мы снова `fold`, с `a = 1`, `b = 2`, и так далее, пока не дойдем до последнего элемента в диапазоне, `10`.
 
 | `a` | `b` | result |
 | :-: | :-: | :----: |
@@ -62,8 +47,9 @@ result. This process continues until we get to the last element in the range,
 |  3  |  3  |   6    |
 |  6  |  4  |   10   |
 | 10  |  5  |   15   |
-| 15  |  6  |   21   |
-| 21  |  7  |   28   |
-| 28  |  8  |   36   |
-| 36  |  9  |   45   |
-| 45  | 10  |   55   |
+|  15 |  6  |   21   |
+|  21 |  7  |   28   |
+|  28 |  8  |   36   |
+|  36 |  9  |   45   |
+|  45 | 10  |   55   |
+```

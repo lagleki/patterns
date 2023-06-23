@@ -1,33 +1,20 @@
-# Use borrowed types for arguments
+# Используйте заимствованные типы для аргументов
 
-## Description
+## Описание
 
-Using a target of a deref coercion can increase the flexibility of your code
-when you are deciding which argument type to use for a function argument.
-In this way, the function will accept more input types.
+Использование цели косвенного приведения типов может увеличить гибкость вашего кода, когда вы решаете, какой тип аргумента использовать для функции. Таким образом, функция будет принимать больше типов ввода.
 
-This is not limited to slice-able or fat pointer types.
-In fact, you should always prefer using the **borrowed type** over
-**borrowing the owned type**.
-Such as `&str` over `&String`, `&[T]` over `&Vec<T>`, or `&T` over `&Box<T>`.
+Это не ограничивается типами, которые можно нарезать или толстыми указателями. Фактически, вы всегда должны предпочитать использовать **заимствованный тип** вместо **заимствования владеющего типа**. Например, `&str` вместо `&String`, `&[T]` вместо `&Vec<T>` или `&T` вместо `&Box<T>`.
 
-Using borrowed types you can avoid layers of indirection for those instances
-where the owned type already provides a layer of indirection. For instance, a
-`String` has a layer of indirection, so a `&String` will have two layers of
-indirection. We can avoid this by using `&str` instead, and letting `&String`
-coerce to a `&str` whenever the function is invoked.
+Используя заимствованные типы, вы можете избежать слоев косвенности для тех случаев, когда владеющий тип уже обеспечивает слой косвенности. Например, у `String` есть слой косвенности, поэтому у `&String` будет два слоя косвенности. Мы можем избежать этого, используя вместо этого `&str` и позволяя `&String` приводиться к `&str` при вызове функции.
 
-## Example
+## Пример
 
-For this example, we will illustrate some differences for using `&String` as a
-function argument versus using a `&str`, but the ideas apply as well to using
-`&Vec<T>` versus using a `&[T]` or using a `&Box<T>` versus a `&T`.
+Для этого примера мы проиллюстрируем некоторые различия при использовании `&String` в качестве аргумента функции по сравнению с использованием `&str`, но идеи также применимы к использованию `&Vec<T>` вместо использования `&[T]` или использованию `&Box<T>` вместо `&T`.
 
-Consider an example where we wish to determine if a word contains three
-consecutive vowels. We don't need to own the string to determine this, so we
-will take a reference.
+Рассмотрим пример, где мы хотим определить, содержит ли слово три подряд гласных. Нам не нужно владеть строкой, чтобы определить это, поэтому мы возьмем ссылку.
 
-The code might look something like this:
+Код может выглядеть примерно так:
 
 ```rust
 fn three_vowels(word: &String) -> bool {
@@ -59,36 +46,26 @@ fn main() {
 }
 ```
 
-This works fine because we are passing a `&String` type as a parameter.
-If we remove the comments on the last two lines, the example will fail. This
-is because a `&str` type will not coerce to a `&String` type. We can fix this
-by simply modifying the type for our argument.
+Это работает нормально, потому что мы передаем тип `&String` в качестве параметра. Если мы уберем комментарии в последних двух строках, пример не будет работать. Это происходит потому, что тип `&str` не приводится к типу `&String`. Мы можем исправить это, просто изменяя тип нашего аргумента.
 
-For instance, if we change our function declaration to:
+Например, если мы изменяем объявление нашей функции на:
 
 ```rust, ignore
 fn three_vowels(word: &str) -> bool {
 ```
 
-then both versions will compile and print the same output.
+то обе версии будут компилироваться и выводить одинаковый результат.
 
 ```bash
 Ferris: false
 Curious: true
 ```
 
-But wait, that's not all! There is more to this story.
-It's likely that you may say to yourself: that doesn't matter, I will never be
-using a `&'static str` as an input anyways (as we did when we used `"Ferris"`).
-Even ignoring this special example, you may still find that using `&str` will
-give you more flexibility than using a `&String`.
+Но это еще не все! В этой истории есть еще что-то. Вероятно, вы можете сказать себе: это не имеет значения, я все равно никогда не буду использовать `&'static str` в качестве ввода (как мы сделали, когда использовали `"Ferris"`). Даже игнорируя этот специальный пример, вы все равно можете обнаружить, что использование `&str` даст вам больше гибкости, чем использование `&String`.
 
-Let's now take an example where someone gives us a sentence, and we want to
-determine if any of the words in the sentence contain three consecutive vowels.
-We probably should make use of the function we have already defined and simply
-feed in each word from the sentence.
+Давайте теперь рассмотрим пример, где кто-то дает нам предложение, и мы хотим определить, содержит ли какое-либо из слов в предложении три подряд гласных. Мы, вероятно, должны использовать функцию, которую мы уже определили, и просто подавать каждое слово из предложения.
 
-An example of this could look like this:
+Пример может выглядеть так:
 
 ```rust
 fn three_vowels(word: &str) -> bool {
@@ -118,21 +95,17 @@ fn main() {
 }
 ```
 
-Running this example using our function declared with an argument type `&str`
-will yield
+Запуск этого примера с использованием нашей функции, объявленной с типом аргумента `&str`, даст
 
 ```bash
 curious has three consecutive vowels!
 ```
 
-However, this example will not run when our function is declared with an
-argument type `&String`. This is because string slices are a `&str` and not a
-`&String` which would require an allocation to be converted to `&String` which
-is not implicit, whereas converting from `String` to `&str` is cheap and implicit.
+Однако этот пример не будет работать, когда наша функция объявлена с типом аргумента `&String`. Это происходит потому, что срезы строк - это `&str`, а не `&String`, который требует выделения памяти для преобразования в `&String`, что неявно, в то время как преобразование из `String` в `&str` дешево и неявно.
 
-## See also
+## Смотрите также
 
-- [Rust Language Reference on Type Coercions](https://doc.rust-lang.org/reference/type-coercions.html)
-- For more discussion on how to handle `String` and `&str` see
-  [this blog series (2015)](https://web.archive.org/web/20201112023149/https://hermanradtke.com/2015/05/03/string-vs-str-in-rust-functions.html)
-  by Herman J. Radtke III
+- [Справочник языка Rust по приведению типов](https://doc.rust-lang.org/reference/type-coercions.html)
+- Для более подробного обсуждения того, как обрабатывать `String` и `&str`, см.
+  [эту серию блогов (2015)](https://web.archive.org/web/20201112023149/https://hermanradtke.com/2015/05/03/string-vs-str-in-rust-functions.html)
+  от Herman J. Radtke III

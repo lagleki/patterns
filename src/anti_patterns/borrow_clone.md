@@ -1,14 +1,10 @@
-# Clone to satisfy the borrow checker
+# Клонирование для удовлетворения borrow checker
 
-## Description
+## Описание
 
-The borrow checker prevents Rust users from developing otherwise unsafe code by
-ensuring that either: only one mutable reference exists, or potentially many but
-all immutable references exist. If the code written does not hold true to these
-conditions, this anti-pattern arises when the developer resolves the compiler
-error by cloning the variable.
+Borrow checker предотвращает Rust-пользователей от разработки небезопасного кода, гарантируя, что либо: существует только одна изменяемая ссылка, либо много неизменяемых ссылок. Если написанный код не соответствует этим условиям, этот анти-паттерн возникает, когда разработчик решает проблему компилятора, клонируя переменную.
 
-## Example
+## Пример
 
 ```rust
 // define any variable
@@ -27,47 +23,34 @@ println!("{}", x);
 *y += 1;
 ```
 
-## Motivation
+## Мотивация
 
-It is tempting, particularly for beginners, to use this pattern to resolve
-confusing issues with the borrow checker. However, there are serious
-consequences. Using `.clone()` causes a copy of the data to be made. Any changes
-between the two are not synchronized -- as if two completely separate variables
-exist.
+Этот шаблон часто используется, особенно для начинающих, чтобы решить проблемы с borrow checker. Однако это имеет серьезные последствия. Использование `.clone()` приводит к созданию копии данных. Любые изменения между ними не синхронизируются - как если бы существовали две полностью отдельные переменные.
 
-There are special cases -- `Rc<T>` is designed to handle clones intelligently.
-It internally manages exactly one copy of the data, and cloning it will only
-clone the reference.
+Есть особые случаи - `Rc<T>` предназначен для интеллектуальной обработки клонов. Он внутренне управляет ровно одной копией данных, и клонирование его приведет только к клонированию ссылки.
 
-There is also `Arc<T>` which provides shared ownership of a value of type T
-that is allocated in the heap. Invoking `.clone()` on `Arc` produces a new `Arc`
-instance, which points to the same allocation on the heap as the source `Arc`,
-while increasing a reference count.
+Также есть `Arc<T>`, который обеспечивает общую собственность значения типа T, выделенного в куче. Вызов `.clone()` на `Arc` создает новый экземпляр `Arc`, который указывает на ту же выделение в куче, что и исходный `Arc`, увеличивая счетчик ссылок.
 
-In general, clones should be deliberate, with full understanding of the
-consequences. If a clone is used to make a borrow checker error disappear,
-that's a good indication this anti-pattern may be in use.
+В целом, клонирование должно быть обдуманным, с полным пониманием последствий. Если клон используется для того, чтобы сделать ошибку borrow checker исчезнуть, это хороший признак того, что этот анти-паттерн может быть использован.
 
-Even though `.clone()` is an indication of a bad pattern, sometimes
-**it is fine to write inefficient code**, in cases such as when:
+Несмотря на то, что `.clone()` является признаком плохого шаблона, иногда **нормально писать неэффективный код**, в случаях, когда:
 
-- the developer is still new to ownership
-- the code doesn't have great speed or memory constraints
-  (like hackathon projects or prototypes)
-- satisfying the borrow checker is really complicated, and you prefer to
-  optimize readability over performance
+- разработчик все еще новичок в владении
+- код не имеет больших ограничений на скорость или память
+  (например, хакатонные проекты или прототипы)
+- удовлетворение borrow checker действительно сложно, и вы предпочитаете
+  оптимизировать читабельность в ущерб производительности
 
-If an unnecessary clone is suspected, The [Rust Book's chapter on Ownership](https://doc.rust-lang.org/book/ownership.html)
-should be understood fully before assessing whether the clone is required or not.
+Если подозревается, что клон не нужен, необходимо полностью понимать главу [Ownership](https://doc.rust-lang.org/book/ownership.html) книги Rust, прежде чем оценивать, нужен ли клон или нет.
 
-Also be sure to always run `cargo clippy` in your project, which will detect some
-cases in which `.clone()` is not necessary, like [1](https://rust-lang.github.io/rust-clippy/master/index.html#redundant_clone),
+Также обязательно запускайте `cargo clippy` в своем проекте, который обнаруживает некоторые
+случаи, когда `.clone()` не нужен, например, [1](https://rust-lang.github.io/rust-clippy/master/index.html#redundant_clone),
 [2](https://rust-lang.github.io/rust-clippy/master/index.html#clone_on_copy),
-[3](https://rust-lang.github.io/rust-clippy/master/index.html#map_clone) or [4](https://rust-lang.github.io/rust-clippy/master/index.html#clone_double_ref).
+[3](https://rust-lang.github.io/rust-clippy/master/index.html#map_clone) или [4](https://rust-lang.github.io/rust-clippy/master/index.html#clone_double_ref).
 
-## See also
+## Смотрите также
 
-- [`mem::{take(_), replace(_)}` to keep owned values in changed enums](../idioms/mem-replace.md)
-- [`Rc<T>` documentation, which handles .clone() intelligently](http://doc.rust-lang.org/std/rc/)
-- [`Arc<T>` documentation, a thread-safe reference-counting pointer](https://doc.rust-lang.org/std/sync/struct.Arc.html)
-- [Tricks with ownership in Rust](https://web.archive.org/web/20210120233744/https://xion.io/post/code/rust-borrowchk-tricks.html)
+- [`mem::{take(_), replace(_)}` для сохранения владеемых значений в измененных перечислениях](../idioms/mem-replace.md)
+- [Документация `Rc<T>`, который обрабатывает `.clone()` интеллектуально](http://doc.rust-lang.org/std/rc/)
+- [Документация `Arc<T>`, потокобезопасный указатель с подсчетом ссылок](https://doc.rust-lang.org/std/sync/struct.Arc.html)
+- [Хитрости с владением в Rust](https://web.archive.org/web/20210120233744/https://xion.io/post/code/rust-borrowchk-tricks.html)

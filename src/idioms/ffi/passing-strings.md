@@ -1,29 +1,21 @@
-# Passing Strings
+# Передача строк
 
-## Description
+## Описание
 
-When passing strings to FFI functions, there are four principles that should be
-followed:
+При передаче строк в функции FFI необходимо следовать четырем принципам:
 
-1. Make the lifetime of owned strings as long as possible.
-2. Minimize `unsafe` code during the conversion.
-3. If the C code can modify the string data, use `Vec` instead of `CString`.
-4. Unless the Foreign Function API requires it, the ownership of the string
-   should not transfer to the callee.
+1. Сделайте время жизни собственных строк максимально долгим.
+2. Минимизируйте использование `unsafe` кода во время преобразования.
+3. Если код на языке C может изменять данные строки, используйте `Vec` вместо `CString`.
+4. Если API внешней функции не требует этого, собственность строки не должна передаваться вызываемой функции.
 
-## Motivation
+## Мотивация
 
-Rust has built-in support for C-style strings with its `CString` and `CStr`
-types. However, there are different approaches one can take with strings that
-are being sent to a foreign function call from a Rust function.
+Rust имеет встроенную поддержку строк в стиле C с помощью типов `CString` и `CStr`. Однако, есть разные подходы, которые можно использовать с передачей строк во внешнюю функцию из функции Rust.
 
-The best practice is simple: use `CString` in such a way as to minimize
-`unsafe` code. However, a secondary caveat is that
-_the object must live long enough_, meaning the lifetime should be maximized.
-In addition, the documentation explains that "round-tripping" a `CString` after
-modification is UB, so additional work is necessary in that case.
+Лучшая практика проста: используйте `CString` таким образом, чтобы минимизировать использование `unsafe` кода. Однако, второстепенное предостережение заключается в том, что _объект должен жить достаточно долго_, что означает, что время жизни должно быть максимальным. Кроме того, документация объясняет, что "round-tripping" `CString` после изменения является UB, поэтому в этом случае требуется дополнительная работа.
 
-## Code Example
+## Пример кода
 
 ```rust,ignore
 pub mod unsafe_module {
@@ -65,16 +57,15 @@ pub mod unsafe_module {
 }
 ```
 
-## Advantages
+## Преимущества
 
-The example is written in a way to ensure that:
+Пример написан таким образом, чтобы:
 
-1. The `unsafe` block is as small as possible.
-2. The `CString` lives long enough.
-3. Errors with typecasts are always propagated when possible.
+1. Блок `unsafe` был как можно меньше.
+2. `CString` жила достаточно долго.
+3. Ошибки с приведением типов всегда передаются, когда это возможно.
 
-A common mistake (so common it's in the documentation) is to not use the
-variable in the first block:
+Частой ошибкой (настолько частой, что она присутствует в документации) является неправильное использование переменной в первом блоке:
 
 ```rust,ignore
 pub mod unsafe_module {
@@ -91,15 +82,10 @@ pub mod unsafe_module {
 }
 ```
 
-This code will result in a dangling pointer, because the lifetime of the
-`CString` is not extended by the pointer creation, unlike if a reference were
-created.
+Этот код приведет к висячему указателю, потому что время жизни `CString` не продлевается созданием указателя, в отличие от создания ссылки.
 
-Another issue frequently raised is that the initialization of a 1k vector of
-zeroes is "slow". However, recent versions of Rust actually optimize that
-particular macro to a call to `zmalloc`, meaning it is as fast as the operating
-system's ability to return zeroed memory (which is quite fast).
+Еще одной часто возникающей проблемой является то, что инициализация 1k вектора нулей "медленная". Однако, последние версии Rust фактически оптимизируют этот конкретный макрос до вызова `zmalloc`, что означает, что это быстро, как способность операционной системы возвращать обнуленную память (что довольно быстро).
 
-## Disadvantages
+## Недостатки
 
-None?
+Нет?

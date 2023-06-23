@@ -1,38 +1,29 @@
-# Rust Design Patterns
+# Паттерны Проектирования в Rust
 
-An open source book about design patterns and idioms in the Rust programming
-language that you can read [here](https://rust-unofficial.github.io/patterns/).
+Открытая книга о паттернах и идиомах в языке программирования Rust, которую вы можете прочитать [здесь](https://rust-unofficial.github.io/patterns/).
 
-## Contributing
+## Вклад
 
-You are missing content in this repository that can be helpful for others, and
-you are eager to explain it? Awesome! We are always happy about new contributions
-(e.g. elaboration or corrections on certain topics) to this project.
+В этом репозитории отсутствует контент, который может быть полезен для других, и вы хотите его объяснить? Отлично! Мы всегда рады новым вкладам (например, разъяснениям или исправлениям по определенным темам) в этот проект.
 
-You can check the [Umbrella issue](https://github.com/rust-unofficial/patterns/issues/116)
-for all the patterns, anti-patterns, and idioms that could be added.
+Вы можете проверить [Umbrella issue](https://github.com/rust-unofficial/patterns/issues/116) для всех паттернов, анти-паттернов и идиом, которые могут быть добавлены.
 
-We suggest reading our [Contribution guide](./CONTRIBUTING.md) to get more information
-on how contributing to this repository works.
+Мы предлагаем ознакомиться с нашим [руководством по вкладу](./CONTRIBUTING.md), чтобы получить больше информации о том, как работает вклад в этот репозиторий.
 
-## Building with mdbook
+## Сборка с помощью mdbook
 
-This book is built with [mdbook](https://rust-lang.github.io/mdBook/). You can
-install it by running `cargo install mdbook`.
+Эта книга создана с помощью [mdbook](https://rust-lang.github.io/mdBook/). Вы можете установить его, запустив `cargo install mdbook`.
 
-If you want to build it locally you can run one of these two commands in the root
-directory of the repository:
+Если вы хотите построить его локально, вы можете запустить одну из этих двух команд в корневом каталоге репозитория:
 
 - `mdbook build`
 
-  Builds static html pages as output and place them in the `/book` directory by
-  default.
+  Строит статические html-страницы в качестве выходных данных и помещает их в каталог `/book` по умолчанию.
 
 - `mdbook serve`
 
-  Serves the book at `http://localhost:3000` (port is changeable, take a look at
-  the terminal output to be sure) and reloads the browser when a change occurs.
+  Сервирует книгу на `http://localhost:3000` (порт может быть изменен, посмотрите на вывод терминала, чтобы быть уверенным) и перезагружает браузер при изменении.
 
-## License
+## Лицензия
 
-The content of this repository is licensed under **MPL-2.0**; see [LICENSE](./LICENSE).
+Содержимое этого репозитория лицензировано под **MPL-2.0**; см. [LICENSE](./LICENSE).

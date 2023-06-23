@@ -1,44 +1,39 @@
-# A succinct name for the pattern
+# Краткое название для паттерна
 
-## Description
+## Описание
 
-A short, prose description of the pattern.
+Краткое описание паттерна.
 
-## Example
+## Пример
 
 ```rust
 // An example of the pattern in action, should be mostly code, commented
 // liberally.
 ```
 
-When writing examples, please try to make them compile. This allows us to test
-them. If you fail to write an example that is both complete and readable,
-please at least mark your example code with `ignore` as in here:
+При написании примеров, пожалуйста, старайтесь, чтобы они компилировались. Это позволяет нам их тестировать. Если вы не можете написать пример, который является как полным, так и читаемым, пожалуйста, по крайней мере, пометьте свой пример кода как `ignore`, как здесь:
 
 ```rust,ignore
 // A non-runnable example of the pattern in action, should be mostly code, commented
 // liberally.
 ```
 
-## Motivation
+## Мотивация
 
-Why and where you should use the pattern
+Почему и где следует использовать этот паттерн.
 
-## Advantages
+## Преимущества
 
-Good things about this pattern.
+Хорошие стороны этого паттерна.
 
-## Disadvantages
+## Недостатки
 
-Bad things about this pattern. Possible contraindications.
+Плохие стороны этого паттерна. Возможные противопоказания.
 
-## Discussion
+## Обсуждение
 
-A deeper discussion about this pattern. You might want to cover how this is done
-in other languages, alternative approaches, why this is particularly nice in
-Rust, etc.
+Более глубокое обсуждение этого паттерна. Вы можете рассмотреть, как это делается на других языках, альтернативные подходы, почему это особенно хорошо в Rust и т.д.
 
-## See also
+## Смотрите также
 
-Related patterns (link to the pattern file). Versions of this pattern in other
-languages.
+Связанные паттерны (ссылка на файл паттерна). Версии этого паттерна на других языках.

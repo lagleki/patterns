@@ -48,7 +48,7 @@
 
 - [Функциональное программирование](./functional/index.md)
   - [Парадигмы программирования](./functional/paradigms.md)
-  - [Обобщения как классы типов](./functional/generics-type-classes.md)
+  - [Дженерики как классы типов](./functional/generics-type-classes.md)
   - [Линзы и призмы](./functional/lenses.md)
 
 - [Дополнительные ресурсы](./additional_resources/index.md)

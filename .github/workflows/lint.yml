@@ -2,7 +2,7 @@ name: Lint Markdown
 
 on:
   push:
-    branches: [main]
+    branches: [Russian]
   pull_request:
 
 jobs:

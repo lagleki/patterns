@@ -30,7 +30,7 @@
     - [RAII Guards](./patterns/behavioural/RAII.md)
     - [Стратегия](./patterns/behavioural/strategy.md)
     - [Посетитель](./patterns/behavioural/visitor.md)
-  - [Создающие](./patterns/creational/intro.md)
+  - [Порождающие](./patterns/creational/intro.md)
     - [Строитель](./patterns/creational/builder.md)
     - [Fold](./patterns/creational/fold.md)
   - [Структурные](./patterns/structural/intro.md)
